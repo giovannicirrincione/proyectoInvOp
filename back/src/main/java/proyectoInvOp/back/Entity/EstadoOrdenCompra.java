@@ -9,17 +9,15 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 @Entity
-@Table(name = "proveedor")
+@Table(name = "estadoOrdenCompra")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Proveedor extends Base{
+public class EstadoOrdenCompra extends Base{
 
 
     private String nombre;
-
-    private String direccion;
 
     private LocalDate fechaAlta;
 

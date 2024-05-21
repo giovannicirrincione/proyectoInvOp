@@ -9,19 +9,21 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 @Entity
-@Table(name = "proveedor")
+@Table(name = "parametroGeneral")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Proveedor extends Base{
+public class ParametroGeneral extends Base{
 
-
-    private String nombre;
-
-    private String direccion;
 
     private LocalDate fechaAlta;
 
     private LocalDate fechaBaja;
+
+    private String nombreParametro;
+
+    private int valorParametro;
+
 }
+
