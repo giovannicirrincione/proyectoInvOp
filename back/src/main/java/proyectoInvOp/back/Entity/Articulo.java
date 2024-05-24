@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.antlr.v4.runtime.misc.NotNull;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,6 +32,7 @@ public class Articulo extends Base {
     @JoinColumn(name = "modeloInventarioId")
     private ModeloInventario modeloInventario;
 
+    @NotNull
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name = "familiaArticuloId")
     private FamiliaArticulo familiaArticulo;
