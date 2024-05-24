@@ -16,11 +16,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ParametroGeneral extends Base{
 
-
-    private LocalDate fechaAlta;
-
-    private LocalDate fechaBaja;
-
     private String nombreParametro;
 
     private int valorParametro;

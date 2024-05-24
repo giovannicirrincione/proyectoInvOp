@@ -21,7 +21,4 @@ public class Proveedor extends Base{
 
     private String direccion;
 
-    private LocalDate fechaAlta;
-
-    private LocalDate fechaBaja;
 }

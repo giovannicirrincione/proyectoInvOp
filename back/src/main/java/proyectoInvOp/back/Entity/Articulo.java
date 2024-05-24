@@ -22,15 +22,10 @@ public class Articulo extends Base {
 
     private String descripcion;
 
-    private int stockActual;
+    private Integer stockActual;
 
-    private int CGI;
+    private Integer CGI;
 
-    private LocalDate fechaAlta;
-
-    private LocalDate fechaBaja;
-
-    private LocalDate fechaModificacion;
 
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name = "modeloInventarioId")

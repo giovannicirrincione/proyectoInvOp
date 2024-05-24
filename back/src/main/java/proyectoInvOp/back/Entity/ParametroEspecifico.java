@@ -18,11 +18,6 @@ import java.time.LocalDate;
 
 public class ParametroEspecifico extends Base{
 
-
-    private LocalDate fechaAlta;
-
-    private LocalDate fechaBaja;
-
     private String nombreParametro;
 
     private int valorParametro;

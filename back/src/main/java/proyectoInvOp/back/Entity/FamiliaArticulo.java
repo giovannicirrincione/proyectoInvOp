@@ -20,7 +20,4 @@ public class FamiliaArticulo extends Base{
 
     private String nombre;
 
-    private LocalDate fechaAlta;
-
-    private LocalDate fechaBaja;
 }

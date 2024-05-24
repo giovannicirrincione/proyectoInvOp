@@ -19,10 +19,6 @@ import java.util.List;
 public class MetodoPrediccion extends Base{
 
 
-    private LocalDate fechaAlta;
-
-    private LocalDate fechaBaja;
-
     private String Nombre;
 
     @NotNull
