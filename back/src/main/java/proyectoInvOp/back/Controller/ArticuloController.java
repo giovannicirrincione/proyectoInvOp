@@ -31,7 +31,25 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
                     "{\"error\":\"Error porfavor intente mas tarde. \"}"
             );
         }
-
-
+    }
+    @GetMapping("getAll")
+    public ResponseEntity<?> listarArticulos() {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.listarArticulos());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    "{\"error\":\"Error porfavor intente mas tarde. \"}"
+            );
+        }
+    }
+    @GetMapping("/getOne/{id}")
+    public ResponseEntity<?> listarArticulos(@PathVariable Long id) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.listarArticuloById(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    "{\"error\":\"Error porfavor intente mas tarde. \"}"
+            );
+        }
     }
 }
