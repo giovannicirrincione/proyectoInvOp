@@ -1,5 +1,6 @@
 package proyectoInvOp.back.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DetalleOrden extends Base{
+public class DetalleOrden extends Base {
 
 
     private int cantidad;
@@ -25,7 +26,7 @@ public class DetalleOrden extends Base{
     @JoinColumn(name = "articuloId")
     private Articulo articulo;
 
-    @NotNull
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name = "proveedorId")
     private Proveedor proveedor;

@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 @Entity
 @Table(name = "ordenCompra")
@@ -32,5 +33,5 @@ public class OrdenCompra extends Base{
 
     @NotNull
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<DetalleOrden> detallesOrden;
+    private List<DetalleOrden> detallesOrden = new ArrayList<DetalleOrden>();
 }

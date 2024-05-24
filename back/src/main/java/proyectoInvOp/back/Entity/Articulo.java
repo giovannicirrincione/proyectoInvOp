@@ -1,5 +1,6 @@
 package proyectoInvOp.back.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "articulo")
@@ -37,10 +39,12 @@ public class Articulo extends Base {
     @JoinColumn(name = "familiaArticuloId")
     private FamiliaArticulo familiaArticulo;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name = "provedorDeterminadoId")
     private Proveedor proveedorPredeterminado;
 
+    @JsonIgnore
     @ManyToMany (cascade = CascadeType.REFRESH)
     @JoinTable(
             name = "ArticuloProveedor",

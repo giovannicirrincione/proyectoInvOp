@@ -26,7 +26,7 @@ public abstract class BaseServiceImpl<E extends Base, ID extends Serializable> i
 
 
     @Transactional
-    public E findById(ID id) throws Exception {
+    public E findById(Long id) throws Exception {
         try {
             Optional<E> entity = baseRepository.findActiveById(id);
             return entity.get();

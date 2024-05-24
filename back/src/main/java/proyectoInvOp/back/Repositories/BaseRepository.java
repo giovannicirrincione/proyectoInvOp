@@ -26,7 +26,7 @@ public interface BaseRepository<E extends Base, ID extends Serializable> extends
     //Solo trae los que no esten dados de baja
     @Transactional
     @Query("SELECT e FROM #{#entityName} e WHERE e.id = :id AND e.fechaBaja IS NULL")
-    Optional<E> findActiveById(ID id);
+    Optional<E> findActiveById(Long id);
 
 
 

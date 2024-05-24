@@ -9,19 +9,29 @@ import proyectoInvOp.back.Services.ArticuloServiceImpl;
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping(path = "articulo")
-public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloServiceImpl>{
+public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloServiceImpl> {
 
     @PostMapping("/alta")
     public ResponseEntity<?> saveArticulo(@RequestBody Articulo articulo) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(servicio.saveArticulo(articulo));
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     "{\"error\":\"Error porfavor intente mas tarde. \"}"
             );
         }
     }
 
+    @PutMapping("/baja/{id}")
+    public ResponseEntity<?> bajaArticulo(@PathVariable Long id) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.bajaArticulo(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    "{\"error\":\"Error porfavor intente mas tarde. \"}"
+            );
+        }
 
 
+    }
 }

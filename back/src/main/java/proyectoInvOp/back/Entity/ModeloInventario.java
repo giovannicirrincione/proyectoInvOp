@@ -1,5 +1,6 @@
 package proyectoInvOp.back.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class ModeloInventario extends Base{
     @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private List<FamiliaArticulo> familiaArticulos;
 
+    @JsonIgnore//Cambiar mas adelante
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "ModeloInventarioDatosModelo",
