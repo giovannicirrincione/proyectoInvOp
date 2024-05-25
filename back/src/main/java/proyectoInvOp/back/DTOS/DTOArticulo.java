@@ -1,4 +1,4 @@
-package proyectoInvOp.back;
+package proyectoInvOp.back.DTOS;
 
 import jakarta.persistence.EntityResult;
 import jakarta.persistence.FieldResult;
