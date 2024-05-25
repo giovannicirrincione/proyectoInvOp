@@ -1,14 +1,11 @@
 package proyectoInvOp.back.Services;
 
-import jakarta.persistence.Id;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import proyectoInvOp.back.DTOArticulo;
+import proyectoInvOp.back.DTOS.DTOArticulo;
 import proyectoInvOp.back.Entity.*;
 import proyectoInvOp.back.Repositories.*;
 
-import javax.swing.text.StyledEditorKit;
 import java.util.List;
 import java.util.Optional;
 

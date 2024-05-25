@@ -3,7 +3,7 @@ package proyectoInvOp.back.Repositories;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import proyectoInvOp.back.DTOArticulo;
+import proyectoInvOp.back.DTOS.DTOArticulo;
 import proyectoInvOp.back.Entity.Articulo;
 
 import java.util.List;

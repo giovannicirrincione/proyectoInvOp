@@ -10,9 +10,9 @@ import proyectoInvOp.back.Services.ArticuloServiceImpl;
 @CrossOrigin(origins = "*")
 @RequestMapping(path = "articulo")
 public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloServiceImpl> {
-
-    @PostMapping("/alta")
-    public ResponseEntity<?> saveArticulo(@RequestBody Articulo articulo) {
+    @Override
+    @PostMapping("")
+    public ResponseEntity<?> save(@RequestBody Articulo articulo) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(servicio.saveArticulo(articulo));
         } catch (Exception e) {
@@ -21,9 +21,9 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
             );
         }
     }
-
-    @PutMapping("/baja/{id}")
-    public ResponseEntity<?> bajaArticulo(@PathVariable Long id) {
+    @Override
+    @PutMapping("/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(servicio.bajaArticulo(id));
         } catch (Exception e) {

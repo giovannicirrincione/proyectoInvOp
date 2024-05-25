@@ -1,10 +1,8 @@
 package proyectoInvOp.back.Services;
 
-import jakarta.persistence.Id;
-import proyectoInvOp.back.DTOArticulo;
+import proyectoInvOp.back.DTOS.DTOArticulo;
 import proyectoInvOp.back.Entity.Articulo;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface ArticuloService extends BaseService<Articulo,Long> {
