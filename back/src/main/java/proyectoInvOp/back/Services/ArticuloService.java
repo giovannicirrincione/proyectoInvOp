@@ -8,7 +8,7 @@ import java.util.List;
 public interface ArticuloService extends BaseService<Articulo,Long> {
     Articulo saveArticulo(Articulo articulo) throws Exception;
 
-    String bajaArticulo(Long id) throws Exception;
+    boolean bajaArticulo(Long id) throws Exception;
 
     List<DTOArticulo> listarArticulos() throws Exception;
 

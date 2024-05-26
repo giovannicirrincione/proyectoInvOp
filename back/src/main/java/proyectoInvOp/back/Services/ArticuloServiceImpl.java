@@ -52,7 +52,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
     }
 
     @Override
-    public String bajaArticulo(Long id) throws Exception {
+    public boolean bajaArticulo(Long id) throws Exception {
 
         try {
             Optional<Articulo> articulo = articuloRepository.findActiveById(id);
@@ -65,15 +65,15 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
                     EstadoOrdenCompra estadoOrdenCompra = ordenCompra.getEstadoOrdenCompra();
                     String estadoActual = estadoOrdenCompra.getNombre();
                     if ("Pendiente".equals(estadoActual) || "En Curso".equals(estadoActual)) {
-                        return "No se puede dar de baja porque tiene una orden de compra pendiente o en curso";
+                        return false;
                     }
                 }
 
                 // Aquí puedes proceder a dar de baja el artículo.
                 articuloRepository.bajaLogicaById(id);
-                return "El artículo ha sido dado de baja";
+                return true;
             } else {
-                return "El artículo no fue encontrado";
+                return false;
 
             }
         } catch (Exception e) {
