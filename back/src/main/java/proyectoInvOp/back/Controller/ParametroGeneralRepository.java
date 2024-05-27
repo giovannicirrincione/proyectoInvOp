@@ -11,4 +11,6 @@ import proyectoInvOp.back.Services.ParametroGeneralServiceImpl;
 @CrossOrigin(origins = "*")
 @RequestMapping(path = "parametrogeneral")
 public class ParametroGeneralRepository extends BaseControllerImpl<ParametroGeneral, ParametroGeneralServiceImpl> {
+
+
 }
