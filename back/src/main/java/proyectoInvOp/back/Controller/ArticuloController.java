@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.*;
 import proyectoInvOp.back.Entity.Articulo;
 import proyectoInvOp.back.Services.ArticuloServiceImpl;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping(path = "articulo")
@@ -59,4 +62,15 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
             );
         }
     }
+    @GetMapping("/demandaHistorica/{id}")
+    public ResponseEntity<?> demandaHistorica(@PathVariable Long id, @RequestParam LocalDate fechaDesde, @RequestParam LocalDate fechaHasta) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.demandaHistorica(id, fechaDesde, fechaHasta));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    "{\"error\":\"Error porfavor intente mas tarde. \"}"
+            );
+        }
+    }
+
 }

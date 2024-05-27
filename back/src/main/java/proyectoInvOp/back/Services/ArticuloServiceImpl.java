@@ -1,11 +1,14 @@
 package proyectoInvOp.back.Services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import proyectoInvOp.back.DTOS.DTOArticulo;
 import proyectoInvOp.back.Entity.*;
 import proyectoInvOp.back.Repositories.*;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +21,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
     ModeloInventarioRepository modeloInventarioRepository;
     @Autowired
     OrdenCompraRepository ordenCompraRepository;
+    @Autowired
+    VentaRepository ventaRepository;
 
     public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository) {
         super(baseRepository);
@@ -96,6 +101,26 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
             return articuloRepository.findArticuloConValoresById(id);
         }
         catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    public int demandaHistorica(Long id, LocalDate fechaDesde, LocalDate fechaHasta) throws Exception {
+        try {
+            List<Venta> ventasDelArticulo = ventaRepository.ventasDeUnProducto(id, fechaDesde, fechaHasta);
+
+            int cantidadVendidaTotal = 0;
+            for (Venta venta : ventasDelArticulo) {
+                List<DetalleVenta> detalleVentas = venta.getDetalleVentas();
+                for (DetalleVenta detalle : detalleVentas) {
+                    if (id.equals(detalle.getArticulo().getId())) {
+                        cantidadVendidaTotal += detalle.getCantidad();
+                    }
+                }
+            }
+            return cantidadVendidaTotal;
+        } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
