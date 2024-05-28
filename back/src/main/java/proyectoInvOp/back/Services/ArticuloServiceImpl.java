@@ -29,7 +29,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
     }
 
     @Override
-    public Articulo saveArticulo(Articulo articulo) throws Exception {
+    public Articulo save(Articulo articulo) throws Exception {
         try {
             FamiliaArticulo familiaArticulo = articulo.getFamiliaArticulo();
 

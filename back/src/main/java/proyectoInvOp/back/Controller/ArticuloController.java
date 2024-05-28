@@ -17,7 +17,7 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
     @PostMapping("")
     public ResponseEntity<?> save(@RequestBody Articulo articulo) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(servicio.saveArticulo(articulo));
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.save(articulo));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     "{\"error\":\"Error porfavor intente mas tarde. \"}"

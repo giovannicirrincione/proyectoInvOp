@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface ArticuloService extends BaseService<Articulo,Long> {
-    Articulo saveArticulo(Articulo articulo) throws Exception;
 
     boolean bajaArticulo(Long id) throws Exception;
 

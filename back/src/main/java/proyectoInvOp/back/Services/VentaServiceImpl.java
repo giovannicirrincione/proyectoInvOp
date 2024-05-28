@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import proyectoInvOp.back.Entity.DetalleOrden;
 import proyectoInvOp.back.Entity.DetalleVenta;
 import proyectoInvOp.back.Entity.Venta;
+import proyectoInvOp.back.PatronObservador.ArticuloObserver;
+import proyectoInvOp.back.PatronObservador.VentaObservable;
 import proyectoInvOp.back.Repositories.BaseRepository;
 import proyectoInvOp.back.Repositories.VentaRepository;
 
@@ -17,16 +19,18 @@ import java.util.List;
 
 @Service
 public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements VentaService {
-    public VentaServiceImpl(BaseRepository<Venta, Long> baseRepository, VentaRepository ventaRepository) {
-        super(baseRepository);
-    }
+    @Autowired
+    private final ArticuloObserver articuloObserver;
 
     @Autowired
+    public VentaServiceImpl(BaseRepository<Venta, Long> baseRepository, ArticuloObserver articuloObserver) {
+        super(baseRepository);
+        this.articuloObserver = articuloObserver;
+    }
+    @Autowired
+    EntityManager entityManager;
+    @Autowired
     VentaRepository ventaRepository;
-    @PersistenceContext
-    private EntityManager entityManager;
-
-
     @Override
     @Transactional
     public Venta save(Venta venta) throws Exception {
@@ -45,8 +49,24 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
             }
             // Reemplaza la lista de detalles en `venta` con la lista gestionada
             venta.setDetalleVentas(managedDetalles);
+            //Guardamos la venta en la BD
 
-            return super.save(venta);
+            Venta savedVenta = super.save(venta);
+
+
+            // Creo el observable y mando como parametro la Venta
+
+            VentaObservable ventaObservable = new VentaObservable(savedVenta);
+            ventaObservable.addObserver(articuloObserver);
+
+
+            // Notificar a los observadores (actualizar stock)
+            ventaObservable.notifyObservers();
+
+
+            return savedVenta;
+
+
         } catch (Exception e) {
             throw new Exception("Error saving Venta", e);
         }
