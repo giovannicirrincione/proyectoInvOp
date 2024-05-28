@@ -62,15 +62,6 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
             );
         }
     }
-    @GetMapping("/demandaHistorica/{id}")
-    public ResponseEntity<?> demandaHistorica(@PathVariable Long id, @RequestParam LocalDate fechaDesde, @RequestParam LocalDate fechaHasta) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(servicio.demandaHistorica(id, fechaDesde, fechaHasta));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    "{\"error\":\"Error porfavor intente mas tarde. \"}"
-            );
-        }
-    }
+
 
 }

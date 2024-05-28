@@ -10,5 +10,10 @@
         <module name="back.main" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="back" target="17" />
+      <module name="back.main" target="17" />
+      <module name="back.test" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>

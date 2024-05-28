@@ -104,24 +104,4 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
             throw new Exception(e.getMessage());
         }
     }
-
-    @Override
-    public int demandaHistorica(Long id, LocalDate fechaDesde, LocalDate fechaHasta) throws Exception {
-        try {
-            List<Venta> ventasDelArticulo = ventaRepository.ventasDeUnProducto(id, fechaDesde, fechaHasta);
-
-            int cantidadVendidaTotal = 0;
-            for (Venta venta : ventasDelArticulo) {
-                List<DetalleVenta> detalleVentas = venta.getDetalleVentas();
-                for (DetalleVenta detalle : detalleVentas) {
-                    if (id.equals(detalle.getArticulo().getId())) {
-                        cantidadVendidaTotal += detalle.getCantidad();
-                    }
-                }
-            }
-            return cantidadVendidaTotal;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
 }

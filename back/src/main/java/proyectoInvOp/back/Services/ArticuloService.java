@@ -16,5 +16,4 @@ public interface ArticuloService extends BaseService<Articulo,Long> {
 
     DTOArticulo listarArticuloById(Long id) throws Exception;
 
-    int demandaHistorica(Long id, LocalDate fechaDesde, LocalDate fechaHasta) throws Exception;
 }

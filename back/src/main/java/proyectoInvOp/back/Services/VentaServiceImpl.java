@@ -11,6 +11,7 @@ import proyectoInvOp.back.Entity.Venta;
 import proyectoInvOp.back.Repositories.BaseRepository;
 import proyectoInvOp.back.Repositories.VentaRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +53,25 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
 
 
 
+    }
+    @Override
+    public int demandaHistorica(Long id, LocalDate fechaDesde, LocalDate fechaHasta) throws Exception {
+        try {
+            List<Venta> ventasDelArticulo = ventaRepository.ventasDeUnProducto(id, fechaDesde, fechaHasta);
+
+            int cantidadVendidaTotal = 0;
+            for (Venta venta : ventasDelArticulo) {
+                List<DetalleVenta> detalleVentas = venta.getDetalleVentas();
+                for (DetalleVenta detalle : detalleVentas) {
+                    if (id.equals(detalle.getArticulo().getId())) {
+                        cantidadVendidaTotal += detalle.getCantidad();
+                    }
+                }
+            }
+            return cantidadVendidaTotal;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
 
 }
