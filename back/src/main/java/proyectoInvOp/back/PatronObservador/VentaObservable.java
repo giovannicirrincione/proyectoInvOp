@@ -37,7 +37,7 @@ public class VentaObservable implements Obervable{
 
                 for (Observer observer : observers) {
 
-                    observer.update(detalle.getArticulo(), detalle.getCantidad());
+                    observer.updateVenta(detalle.getArticulo(), detalle.getCantidad());
 
                 }
             }

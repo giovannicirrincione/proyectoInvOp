@@ -17,7 +17,7 @@ public class ArticuloObserver implements Observer{
     ArticuloRepository articuloRepository;
     //Metodo del observador que actualiza el stock
     @Override
-    public void update(Articulo articulo, int cantidadVendida) {
+    public void updateVenta(Articulo articulo, int cantidadVendida) {
 
         Optional<Articulo> existingArticulo = articuloRepository.findActiveById(articulo.getId());
 
@@ -26,6 +26,27 @@ public class ArticuloObserver implements Observer{
             Articulo articuloBD = existingArticulo.get();
 
             articuloBD.setStockActual(articuloBD.getStockActual() - cantidadVendida);
+
+            try {
+                articuloService.update(articuloBD.getId(), articuloBD);
+
+            } catch (Exception e) {
+
+                throw new RuntimeException(e);
+            }
+        }
+
+
+    }
+    @Override
+    public void updateCompra(Articulo articulo, int cantidadAdquirida) {
+
+        Optional<Articulo> existingArticulo = articuloRepository.findActiveById(articulo.getId());
+
+        if (existingArticulo.isPresent()) {
+            Articulo articuloBD = existingArticulo.get();
+
+            articuloBD.setStockActual(articuloBD.getStockActual() + cantidadAdquirida);
 
             try {
                 articuloService.update(articuloBD.getId(), articuloBD);

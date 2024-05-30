@@ -5,27 +5,35 @@ import jakarta.persistence.OrderColumn;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.aspectj.weaver.ast.Or;
+import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import proyectoInvOp.back.Entity.Articulo;
 import proyectoInvOp.back.Entity.EstadoOrdenCompra;
 import proyectoInvOp.back.Entity.OrdenCompra;
 import proyectoInvOp.back.Entity.Proveedor;
+import proyectoInvOp.back.PatronObservador.ArticuloObserver;
+import proyectoInvOp.back.PatronObservador.OrdenCompraObservable;
 import proyectoInvOp.back.Repositories.BaseRepository;
 import proyectoInvOp.back.Repositories.EstadoOrdenCompraRepository;
 import proyectoInvOp.back.Repositories.OrdenCompraRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> implements OrdenCompraService {
     @Autowired
+    ArticuloObserver articuloObserver;
+    @Autowired
     OrdenCompraRepository ordenCompraRepository;
     @Autowired
     EstadoOrdenCompraRepository estadoOrdenCompraRepository;
-
-    public OrdenCompraServiceImpl(BaseRepository<OrdenCompra, Long> baseRepository, OrdenCompraRepository ordenCompraRepository) {
+    @Autowired
+    public OrdenCompraServiceImpl(BaseRepository<OrdenCompra, Long> baseRepository, ArticuloObserver articuloObserver) {
         super(baseRepository);
+        this.articuloObserver = articuloObserver;
+
     }
     @Override
     public OrdenCompra save(OrdenCompra ordenCompra) throws Exception {
@@ -67,6 +75,79 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
 
 
     }
+
+    @Transactional
+    public boolean cambioEstado(OrdenCompra ordenCompra, Long id) throws Exception{
+        try {
+            //Se compara el estado seleccionado con el estado actual para verificar que se puede modificar
+            //Si son iguales termina la funcion
+            Optional<EstadoOrdenCompra> estadoOrdenCompraOptional = estadoOrdenCompraRepository.findActiveById(id);
+
+            EstadoOrdenCompra estadoOrdenCompra = estadoOrdenCompraOptional.get();
+
+                if (ordenCompra.getEstadoOrdenCompra().equals(estadoOrdenCompra)) {
+
+                    throw new Exception("El estado seleccionado es igual al estado actual");
+                }
+
+                //Verificamos que el estado seleccionado sea uno posible
+
+                //Estado actual
+                String estadoActual = ordenCompra.getEstadoOrdenCompra().getNombre();
+
+                //Logica para cada estado
+
+
+                //Si esta en PENDIENTE, solo puede ser cambiada a EN CURSO
+                if ("Pendiente".equals(estadoActual)) {
+                    if ("Enviada".equals(estadoOrdenCompra.getNombre())) {
+                        throw new Exception("No se puede asignar el estado");
+                    }
+                    //Agregar logica MODIFICACION DE ESTADO
+                    ordenCompra.setEstadoOrdenCompra(estadoOrdenCompra);
+                }
+
+                //Si esta EN CURSO, solo puede ser cambiado a ENVIADO
+                if ("En curso".equals(estadoActual)) {
+                    if ("Pendiente".equals(estadoOrdenCompra.getNombre())) {
+                        throw new Exception("No se puede asignar el estado");
+                    }
+
+                    ordenCompraRepository.updateOrdenCompra(ordenCompra.getId(), ordenCompra);
+
+                    //Agregar logica de MODIFICACION DE ESTADO
+                    ordenCompra.setEstadoOrdenCompra(estadoOrdenCompra);
+                    OrdenCompraObservable ordenCompraObservable = new OrdenCompraObservable(ordenCompra);
+                    ordenCompraObservable.addObserver(articuloObserver);
+                    ordenCompraObservable.notifyObservers();
+
+                }
+
+                //Si esta ENVIADA, no se puede modificar el Estado
+                if (estadoActual == "Enviada") {
+                    throw new Exception("La orden de compra ya se ha entregado!");
+                }
+
+
+
+
+            //GUARDAR EL CAMBIO DE ESTADO
+
+
+            //Agregar OBSERVADOR
+
+
+                return true;
+
+            }
+        catch(Exception e ){
+                throw new Exception(e.getMessage());
+            }
+
+
+    }
+
+
 
 
 
