@@ -7,8 +7,10 @@ import jakarta.transaction.Transactional;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import proyectoInvOp.back.Entity.Articulo;
 import proyectoInvOp.back.Entity.EstadoOrdenCompra;
 import proyectoInvOp.back.Entity.OrdenCompra;
+import proyectoInvOp.back.Entity.Proveedor;
 import proyectoInvOp.back.Repositories.BaseRepository;
 import proyectoInvOp.back.Repositories.EstadoOrdenCompraRepository;
 import proyectoInvOp.back.Repositories.OrdenCompraRepository;
@@ -43,6 +45,11 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
             }
 
             if (bandera){
+                Articulo articulo = ordenCompra.getArticulo();
+
+                Proveedor proveedorPredeterminado = articulo.getProveedorPredeterminado();
+
+                ordenCompra.setProveedor(proveedorPredeterminado);
 
                 EstadoOrdenCompra estadoOrdenCompra = estadoOrdenCompraRepository.findByNombre("Pendiente");
 
