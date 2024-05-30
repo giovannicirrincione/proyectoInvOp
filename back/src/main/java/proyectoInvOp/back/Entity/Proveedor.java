@@ -1,13 +1,14 @@
 package proyectoInvOp.back.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
+
 @Entity
 @Table(name = "proveedor")
 @Getter
@@ -24,5 +25,9 @@ public class Proveedor extends Base{
     private String telefono;
 
     private String email;
+
+    @OneToMany(cascade = CascadeType.ALL ,orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<DemoraProveedorArticulo> proveedorArticulos;
+
 
 }
