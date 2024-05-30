@@ -1,13 +1,14 @@
 package proyectoInvOp.back.Services;
 
-import jakarta.persistence.Id;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
+import proyectoInvOp.back.DTOS.DTOArticulo;
 import proyectoInvOp.back.Entity.*;
 import proyectoInvOp.back.Repositories.*;
 
-import javax.swing.text.StyledEditorKit;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,60 +21,87 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
     ModeloInventarioRepository modeloInventarioRepository;
     @Autowired
     OrdenCompraRepository ordenCompraRepository;
+    @Autowired
+    VentaRepository ventaRepository;
 
     public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository) {
         super(baseRepository);
     }
 
     @Override
-    public Articulo saveArticulo(Articulo articulo) throws Exception {
+    public Articulo save(Articulo articulo) throws Exception {
+        try {
+            FamiliaArticulo familiaArticulo = articulo.getFamiliaArticulo();
 
-        FamiliaArticulo familiaArticulo = articulo.getFamiliaArticulo();
-
-        List<ModeloInventario> modeloInventarioList = modeloInventarioRepository.findAllActive();
+            List<ModeloInventario> modeloInventarioList = modeloInventarioRepository.findAllActive();
 
 
-        for (ModeloInventario modeloInventario : modeloInventarioList) {
+            for (ModeloInventario modeloInventario : modeloInventarioList) {
 
-            List<FamiliaArticulo> familiaArticuloList = modeloInventario.getFamiliaArticulos();
+                List<FamiliaArticulo> familiaArticuloList = modeloInventario.getFamiliaArticulos();
 
-            for (FamiliaArticulo familiaArticulo1 : familiaArticuloList) {
+                for (FamiliaArticulo familiaArticulo1 : familiaArticuloList) {
 
-                if (familiaArticulo1.equals(familiaArticulo)) {
+                    if (familiaArticulo1.equals(familiaArticulo)) {
 
-                    articulo.setModeloInventario(modeloInventario);
+                        articulo.setModeloInventario(modeloInventario);
+                    }
                 }
             }
+            articuloRepository.save(articulo);
+
+            return articulo;
+        }catch (Exception e){
+            throw  new Exception(e.getMessage());
         }
-
-        articuloRepository.save(articulo);
-
-        return articulo;
     }
 
     @Override
-    public String bajaArticulo(Long id) throws Exception {
+    public boolean bajaArticulo(Long id) throws Exception {
 
+        try {
+            Optional<Articulo> articulo = articuloRepository.findActiveById(id);
 
-        Optional<Articulo> articulo = articuloRepository.findActiveById(id);
+            if (articulo.isPresent()) {
+                Articulo articuloEcontrado = articulo.get();
+                List<OrdenCompra> ordenComprasList = ordenCompraRepository.findAllByArticuloId(id);
 
-        if (articulo.isPresent()) {
-            Articulo articuloEcontrado = articulo.get();
-            List<OrdenCompra> ordenComprasList = ordenCompraRepository.findAllByArticuloId(id);
-
-            for (OrdenCompra ordenCompra : ordenComprasList) {
-                EstadoOrdenCompra estadoOrdenCompra = ordenCompra.getEstadoOrdenCompra();
-                String estadoActual = estadoOrdenCompra.getNombre();
-                if ("Pendiente".equals(estadoActual) || "En Curso".equals(estadoActual)) {
-                    return "No se puede dar de baja porque tiene una orden de compra pendiente o en curso";
+                for (OrdenCompra ordenCompra : ordenComprasList) {
+                    EstadoOrdenCompra estadoOrdenCompra = ordenCompra.getEstadoOrdenCompra();
+                    String estadoActual = estadoOrdenCompra.getNombre();
+                    if ("Pendiente".equals(estadoActual) || "En Curso".equals(estadoActual)) {
+                        return false;
+                    }
                 }
-            }
 
-            // Aquí puedes proceder a dar de baja el artículo.
-            articuloRepository.bajaLogicaById(id);
-            return "El artículo ha sido dado de baja";
-        } else {
-            return "El artículo no fue encontrado";
+                // Aquí puedes proceder a dar de baja el artículo.
+                articuloRepository.bajaLogicaById(id);
+                return true;
+            } else {
+                return false;
+
+            }
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+    @Override
+    public List<DTOArticulo> listarArticulos() throws Exception {
+        try {
+            return articuloRepository.findArticulosConValores();
+        }
+        catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    public DTOArticulo listarArticuloById(Long id) throws Exception {
+        try {
+            return articuloRepository.findArticuloConValoresById(id);
+        }
+        catch (Exception e){
+            throw new Exception(e.getMessage());
         }
     }
 }

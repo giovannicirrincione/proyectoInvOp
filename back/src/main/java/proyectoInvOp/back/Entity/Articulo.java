@@ -20,7 +20,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class Articulo extends Base {
 
-
+    @Column(updatable = false)
     private String nombre;
 
     private String descripcion;

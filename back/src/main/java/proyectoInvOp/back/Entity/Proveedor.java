@@ -21,4 +21,8 @@ public class Proveedor extends Base{
 
     private String direccion;
 
+    private String telefono;
+
+    private String email;
+
 }

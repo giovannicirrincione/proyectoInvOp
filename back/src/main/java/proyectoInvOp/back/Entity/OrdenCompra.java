@@ -26,12 +26,25 @@ public class OrdenCompra extends Base{
 
     private float montoTotal;
 
+    private int cantidad;
+
     @NotNull
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name = "estadoOrdenId")
     private EstadoOrdenCompra estadoOrdenCompra;
 
     @NotNull
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<DetalleOrden> detallesOrden = new ArrayList<DetalleOrden>();
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
+    @JoinColumn(name = "proveedorId")
+    private Proveedor proveedor;
+
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
+    @JoinColumn(name = "articuloId")
+    private Articulo articulo;
+
+
+
+
+
+
 }
