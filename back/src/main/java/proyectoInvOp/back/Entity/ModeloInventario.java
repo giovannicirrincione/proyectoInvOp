@@ -25,7 +25,8 @@ public class ModeloInventario extends Base{
     @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private List<FamiliaArticulo> familiaArticulos;
 
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.REFRESH)
+    @JsonIgnore//Cambiar mas adelante
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "ModeloInventarioDatosModelo",
             joinColumns = @JoinColumn(name = "modeloInventarioId"),

@@ -25,13 +25,7 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
     @PutMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
-            if(servicio.bajaArticulo(id)) {
-                return ResponseEntity.status(HttpStatus.OK).body(servicio.bajaArticulo(id));
-            }else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        "{\"error\":\"estaEnOrden \"}"
-                );
-            }
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.bajaArticulo(id));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     "{\"error\":\"Error porfavor intente mas tarde. \"}"

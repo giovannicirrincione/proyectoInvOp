@@ -1,14 +1,11 @@
 package proyectoInvOp.back.Services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import proyectoInvOp.back.DTOS.DTOArticulo;
 import proyectoInvOp.back.Entity.*;
 import proyectoInvOp.back.Repositories.*;
 
-import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +27,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
     public Articulo saveArticulo(Articulo articulo) throws Exception {
         try {
             FamiliaArticulo familiaArticulo = articulo.getFamiliaArticulo();
-            System.out.println(familiaArticulo.getNombre());
+
             List<ModeloInventario> modeloInventarioList = modeloInventarioRepository.findAllActive();
 
 
@@ -40,10 +37,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
 
                 for (FamiliaArticulo familiaArticulo1 : familiaArticuloList) {
 
-                    if (familiaArticulo1.equals(familiaArticulo)) { //Al comparar el objeto entero, tenemos que pasarle el objeto familia entero en el body pq si no no anda, ej
-                                                                    // no anda con pasarle solo el id de la familia
+                    if (familiaArticulo1.equals(familiaArticulo)) {
 
-                        System.out.println("hola");
                         articulo.setModeloInventario(modeloInventario);
                     }
                 }
@@ -57,7 +52,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
     }
 
     @Override
-    public boolean bajaArticulo(Long id) throws Exception {
+    public String bajaArticulo(Long id) throws Exception {
 
         try {
             Optional<Articulo> articulo = articuloRepository.findActiveById(id);
@@ -70,16 +65,16 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
                     EstadoOrdenCompra estadoOrdenCompra = ordenCompra.getEstadoOrdenCompra();
                     String estadoActual = estadoOrdenCompra.getNombre();
                     if ("Pendiente".equals(estadoActual) || "En Curso".equals(estadoActual)) {
-                        return false;
+                        return "No se puede dar de baja porque tiene una orden de compra pendiente o en curso";
                     }
                 }
 
                 // Aquí puedes proceder a dar de baja el artículo.
                 articuloRepository.bajaLogicaById(id);
-                return true;
+                return "El artículo ha sido dado de baja";
             } else {
-                System.out.println("capo");
-                return false;
+                return "El artículo no fue encontrado";
+
             }
         } catch (Exception e) {
             throw new Exception(e.getMessage());
