@@ -1,11 +1,9 @@
 package proyectoInvOp.back.Services;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import proyectoInvOp.back.Entity.DetalleOrden;
 import proyectoInvOp.back.Entity.DetalleVenta;
 import proyectoInvOp.back.Entity.Venta;
 import proyectoInvOp.back.PatronObservador.ArticuloObserver;
@@ -57,6 +55,7 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
             // Creo el observable y mando como parametro la Venta
 
             VentaObservable ventaObservable = new VentaObservable(savedVenta);
+
             ventaObservable.addObserver(articuloObserver);
 
 
