@@ -8,8 +8,6 @@ import lombok.Setter;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 @Entity
 @Table(name = "ordenCompra")
 @Getter

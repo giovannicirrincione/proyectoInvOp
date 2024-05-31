@@ -1,10 +1,5 @@
 package proyectoInvOp.back.PatronObservador;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.stereotype.Component;
 import proyectoInvOp.back.Entity.DetalleVenta;
 import proyectoInvOp.back.Entity.Venta;
 

@@ -2,12 +2,9 @@ package proyectoInvOp.back.PatronObservador;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import proyectoInvOp.back.Entity.Articulo;
 import proyectoInvOp.back.Repositories.ArticuloRepository;
 import proyectoInvOp.back.Services.ArticuloServiceImpl;
-
-import java.util.List;
 import java.util.Optional;
 @Component
 public class ArticuloObserver implements Observer{

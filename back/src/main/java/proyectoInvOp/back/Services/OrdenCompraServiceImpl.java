@@ -1,11 +1,7 @@
 package proyectoInvOp.back.Services;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.OrderColumn;
-import jakarta.persistence.PersistenceContext;
+
 import jakarta.transaction.Transactional;
-import org.aspectj.weaver.ast.Or;
-import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import proyectoInvOp.back.Entity.Articulo;

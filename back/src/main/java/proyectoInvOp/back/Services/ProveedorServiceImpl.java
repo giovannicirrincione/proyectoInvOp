@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import proyectoInvOp.back.Entity.Articulo;
 import proyectoInvOp.back.Entity.DemoraProveedorArticulo;
 import proyectoInvOp.back.Entity.Proveedor;
-import proyectoInvOp.back.Repositories.ArticuloRepository;
 import proyectoInvOp.back.Repositories.BaseRepository;
 import proyectoInvOp.back.Repositories.ProveedorRepository;
 
@@ -42,6 +41,7 @@ public class ProveedorServiceImpl extends BaseServiceImpl<Proveedor,Long> implem
                         break;
                     }
                 }
+                //SE PODRIA HACER QUE SE MUERTE EL TIEMPO DE ESPERA DEL ARTICULO CON ESE PROVEEDOR CON UN DTO
                 if(bandera){
                     provedoresArticulo.add(proveedor);
 

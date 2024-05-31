@@ -1,10 +1,5 @@
 package proyectoInvOp.back.DTOS;
 
-import jakarta.persistence.EntityResult;
-import jakarta.persistence.FieldResult;
-import jakarta.persistence.SqlResultSetMapping;
-
-
 public interface DTOArticulo {
     Long getId();
     String getNombre();
