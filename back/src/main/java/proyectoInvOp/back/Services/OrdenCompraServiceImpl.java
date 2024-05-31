@@ -113,10 +113,11 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
                         throw new Exception("No se puede asignar el estado");
                     }
 
-                    ordenCompraRepository.updateOrdenCompra(ordenCompra.getId(), ordenCompra);
+
+                    ordenCompra.setEstadoOrdenCompra(estadoOrdenCompra);
+                    super.update(ordenCompra.getId(),ordenCompra);
 
                     //Agregar logica de MODIFICACION DE ESTADO
-                    ordenCompra.setEstadoOrdenCompra(estadoOrdenCompra);
                     OrdenCompraObservable ordenCompraObservable = new OrdenCompraObservable(ordenCompra);
                     ordenCompraObservable.addObserver(articuloObserver);
                     ordenCompraObservable.notifyObservers();
@@ -127,15 +128,6 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
                 if (estadoActual == "Enviada") {
                     throw new Exception("La orden de compra ya se ha entregado!");
                 }
-
-
-
-
-            //GUARDAR EL CAMBIO DE ESTADO
-
-
-            //Agregar OBSERVADOR
-
 
                 return true;
 

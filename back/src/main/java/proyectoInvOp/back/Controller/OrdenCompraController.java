@@ -26,7 +26,7 @@ public class OrdenCompraController extends BaseControllerImpl<OrdenCompra, Orden
             );
         }
     }
-    @PutMapping("/cambiarEstado/{id}")
+    @PutMapping("/cambioEstado/{id}")
     public ResponseEntity<?> cambioEstado(@RequestBody OrdenCompra ordenCompra,@PathVariable Long id){
         try {
             return ResponseEntity.status(HttpStatus.OK).body(servicio.cambioEstado(ordenCompra, id));
