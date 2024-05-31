@@ -18,6 +18,7 @@ import proyectoInvOp.back.Repositories.BaseRepository;
 import proyectoInvOp.back.Repositories.EstadoOrdenCompraRepository;
 import proyectoInvOp.back.Repositories.OrdenCompraRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -113,7 +114,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
                         throw new Exception("No se puede asignar el estado");
                     }
 
-
+                    ordenCompra.setFechaLlegada(LocalDate.now());
                     ordenCompra.setEstadoOrdenCompra(estadoOrdenCompra);
                     super.update(ordenCompra.getId(),ordenCompra);
 
