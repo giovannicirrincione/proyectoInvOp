@@ -27,7 +27,7 @@ public class Proveedor extends Base{
     private String email;
 
     @OneToMany(cascade = CascadeType.ALL ,orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<DemoraProveedorArticulo> proveedorArticulos;
+    private List<DemoraProveedorArticulo> demoraProveedorArticulos;
 
 
 }

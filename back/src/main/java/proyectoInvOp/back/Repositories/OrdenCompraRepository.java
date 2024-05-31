@@ -17,17 +17,6 @@ public interface OrdenCompraRepository extends BaseRepository<OrdenCompra,Long>{
     @Query("SELECT oc FROM OrdenCompra oc WHERE oc.articulo.id = :articuloId")
     List<OrdenCompra> findAllByArticuloId(@Param("articuloId") Long articuloId);
 
-    @Modifying
-    @Transactional
-    @Query("UPDATE OrdenCompra oc SET oc.fechaCreacion = :#{#newOrdenCompra.fechaCreacion}, " +
-            "oc.fechaLlegada = :#{#newOrdenCompra.fechaLlegada}, " +
-            "oc.montoTotal = :#{#newOrdenCompra.montoTotal}, " +
-            "oc.cantidad = :#{#newOrdenCompra.cantidad}, " +
-            "oc.estadoOrdenCompra = :#{#newOrdenCompra.estadoOrdenCompra}, " +
-            "oc.proveedor = :#{#newOrdenCompra.proveedor}, " +
-            "oc.articulo = :#{#newOrdenCompra.articulo} " +
-            "WHERE oc.id = :ordenCompraId")
-    void updateOrdenCompra(@Param("ordenCompraId") Long ordenCompraId, @Param("newOrdenCompra") OrdenCompra newOrdenCompra);
 
 
 }
