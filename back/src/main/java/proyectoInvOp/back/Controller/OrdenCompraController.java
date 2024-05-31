@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import proyectoInvOp.back.Entity.Articulo;
+import proyectoInvOp.back.Entity.EstadoOrdenCompra;
 import proyectoInvOp.back.Entity.OrdenCompra;
 import proyectoInvOp.back.Services.ArticuloServiceImpl;
 import proyectoInvOp.back.Services.OrdenCompraServiceImpl;
@@ -19,6 +20,16 @@ public class OrdenCompraController extends BaseControllerImpl<OrdenCompra, Orden
     public ResponseEntity<?> save(@RequestBody OrdenCompra ordenCompra) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(servicio.save(ordenCompra));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    "{\"error\":\"Error porfavor intente mas tarde. \"}"
+            );
+        }
+    }
+    @PutMapping("/cambiarEstado/{id}")
+    public ResponseEntity<?> cambioEstado(@RequestBody OrdenCompra ordenCompra,@PathVariable Long id){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.cambioEstado(ordenCompra, id));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     "{\"error\":\"Error porfavor intente mas tarde. \"}"
