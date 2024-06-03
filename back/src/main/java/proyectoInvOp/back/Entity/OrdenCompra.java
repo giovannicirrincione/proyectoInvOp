@@ -8,8 +8,6 @@ import lombok.Setter;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 @Entity
 @Table(name = "ordenCompra")
 @Getter
@@ -26,12 +24,25 @@ public class OrdenCompra extends Base{
 
     private float montoTotal;
 
+    private int cantidad;
+
     @NotNull
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name = "estadoOrdenId")
     private EstadoOrdenCompra estadoOrdenCompra;
 
     @NotNull
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<DetalleOrden> detallesOrden = new ArrayList<DetalleOrden>();
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
+    @JoinColumn(name = "proveedorId")
+    private Proveedor proveedor;
+
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
+    @JoinColumn(name = "articuloId")
+    private Articulo articulo;
+
+
+
+
+
+
 }

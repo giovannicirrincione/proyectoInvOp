@@ -1,6 +1,7 @@
 package proyectoInvOp.back.Services;
 
 import jakarta.transaction.Transactional;
+import org.springframework.beans.BeanUtils;
 import proyectoInvOp.back.Entity.Base;
 import proyectoInvOp.back.Repositories.BaseRepository;
 
@@ -50,11 +51,18 @@ public abstract class BaseServiceImpl<E extends Base, ID extends Serializable> i
     public E update(ID id, E entity) throws Exception {
         try {
             Optional<E> entityOptional = baseRepository.findById(id);
-            E cliente = entityOptional.get();
-            cliente = baseRepository.save(entity);
-            return cliente;
-        } catch (Exception e){
-            throw new Exception(e.getMessage());
+            if (entityOptional.isPresent()) {
+                E existingEntity = entityOptional.get();
+
+                // Copiar los cambios de `entity` a `existingEntity`
+                BeanUtils.copyProperties(entity, existingEntity, "id");
+
+                return baseRepository.save(existingEntity);
+            } else {
+                throw new Exception("Entity not found with id: " + id);
+            }
+        } catch (Exception e) {
+            throw new Exception(e.getMessage(), e);
         }
     }
 

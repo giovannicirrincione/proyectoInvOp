@@ -1,5 +1,6 @@
 package proyectoInvOp.back.Repositories;
 
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -11,8 +12,9 @@ import java.util.List;
 public interface OrdenCompraRepository extends BaseRepository<OrdenCompra,Long>{
     //Me trae todas la ordenes de compra de un articulo
 
-    @Query("SELECT oc FROM OrdenCompra oc JOIN oc.detallesOrden do WHERE do.articulo.id = :articuloId")
+    @Query("SELECT oc FROM OrdenCompra oc WHERE oc.articulo.id = :articuloId")
     List<OrdenCompra> findAllByArticuloId(@Param("articuloId") Long articuloId);
+
 
 
 }

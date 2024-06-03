@@ -2,8 +2,8 @@ package proyectoInvOp.back.Services;
 
 import proyectoInvOp.back.Entity.Venta;
 
-public interface VentaService extends BaseService<Venta, Long> {
-    Venta saveVenta(Venta venta) throws Exception;
+import java.time.LocalDate;
 
-    String bajaVenta(Long id) throws Exception;
+public interface VentaService extends BaseService<Venta, Long> {
+    int demandaHistorica(Long id, LocalDate fechaDesde, LocalDate fechaHasta) throws Exception;
 }
