@@ -38,7 +38,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
             boolean bandera = true;
 
             List<OrdenCompra> ordenCompraList = ordenCompraRepository.findAllByArticuloId(ordenCompra.getArticulo().getId());
-
+            //check de otra orden de comora activa para el articulo
             for (OrdenCompra ordenCompra1 : ordenCompraList){
                 EstadoOrdenCompra estadoOrdenCompra = ordenCompra.getEstadoOrdenCompra();
                 String estadoActual = estadoOrdenCompra.getNombre();
