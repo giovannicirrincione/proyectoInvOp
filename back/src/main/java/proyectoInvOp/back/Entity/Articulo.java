@@ -18,7 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 public class Articulo extends Base {
 
-    @Column(updatable = false)
     private String nombre;
 
     private String descripcion;
@@ -37,9 +36,8 @@ public class Articulo extends Base {
     @JoinColumn(name = "familiaArticuloId")
     private FamiliaArticulo familiaArticulo;
 
-    @JsonIgnore
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
-    @JoinColumn(name = "provedorDeterminadoId")
+    @JoinColumn(name = "proveedorPredeterminadoId")
     private Proveedor proveedorPredeterminado;
 
     @JsonIgnore
