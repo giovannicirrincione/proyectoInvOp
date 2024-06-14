@@ -1,10 +1,22 @@
 package proyectoInvOp.back.DTOS;
 
-public interface DTOValores {
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-    int getmes();
+@Getter
+@Setter
+@NoArgsConstructor
+public class DTOValores {
+    private int month;
+    private int year;
+    private int cantidad;
 
-    int getanio();
+    public DTOValores(int month, int year, int cantidad) {
+        this.month = month;
+        this.year = year;
+        this.cantidad = cantidad;
+    }
 
-    int getcantidad();
+    // Getters y setters
 }

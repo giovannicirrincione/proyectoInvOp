@@ -27,27 +27,4 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
     public PrediccionDemandaServiceImpl(BaseRepository<PrediccionDemanda, Long> baseRepository) {
         super(baseRepository);
     }
-
-    public PrediccionDemanda predecirDemanda(Articulo articulo) {
-
-        //Trameos los metodos de preciccion de la BD
-        List<MetodoPrediccion> metodoPrediccions = metodoPrediccionRepository.findAllActive();
-        //Llamamos a la factory q luego nos servira dentro del bucle FOR
-        FactorySimulacionSeleccionParametros factorySimulacion = FactorySimulacionSeleccionParametros.getInstancia();
-        //Cuantos meses atras vamos a predecir
-        LocalDate fechaInicio = LocalDate.now().minusMonths(12);
-        //Recorremos los metodos de predicccion
-        for (MetodoPrediccion metodo : metodoPrediccions) {
-
-            EstrategiaSimulacion estrategiaSimulacion = factorySimulacion.obtenerEstrategiaSimulacion(metodo);
-            //Le mandamos las ventas reales
-            //Lo q haria aca es mandarle una lista tipo asi [1,2,3,5,2,32,4,5] que cada campo sean las ventas reales pasadas por mes
-            List<DTOValores> DTOvalores = ventaRepository.findCantidadVendidaPorMes(articulo.getId(),fechaInicio);
-            DTOValoresOptimos valoresOptimos = estrategiaSimulacion.simular(DTOvalores);
-
-
-        }
-
-        return new PrediccionDemanda();
-    }
 }

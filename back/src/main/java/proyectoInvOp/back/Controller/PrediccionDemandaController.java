@@ -12,14 +12,5 @@ import proyectoInvOp.back.Services.PrediccionDemandaServiceImpl;
 @RequestMapping(path = "predicciondemanda")
 public class PrediccionDemandaController extends BaseControllerImpl<PrediccionDemanda, PrediccionDemandaServiceImpl> {
 
-    @PostMapping("/predecirDemanda")
-    public ResponseEntity<?> predecirDemanda(Articulo articulo) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(servicio.predecirDemanda(articulo));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    "{\"error\":\"Error porfavor intente mas tarde. \"}"
-            );
-        }
-    }
+
 }

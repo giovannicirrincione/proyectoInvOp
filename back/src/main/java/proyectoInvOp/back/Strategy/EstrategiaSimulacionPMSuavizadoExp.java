@@ -20,13 +20,13 @@ public class EstrategiaSimulacionPMSuavizadoExp implements EstrategiaSimulacion 
             desviacion.add(0);
             //Probamos con todos los valores de alpha
             for (int j = 1; j < dtoValores.size(); j++) {
-                int demandaPron = dtoValores.get(j-1).getcantidad();
+                int demandaPron = dtoValores.get(j-1).getCantidad();
                 pronostico.add(demandaPron);
-                int demandaReal = dtoValores.get(j-1).getcantidad();
+                int demandaReal = dtoValores.get(j-1).getCantidad();
                 desviacion.add(demandaPron - demandaReal);
                 //calculo de la prediccion para el proximo periodo
 
-                double demandaPredecica = pronostico.get(j) + i * (dtoValores.get(j).getcantidad() - pronostico.get(j));
+                double demandaPredecica = pronostico.get(j) + i * (dtoValores.get(j).getCantidad() - pronostico.get(j));
                 pronostico.add((int) demandaPredecica);
 
             }
