@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.antlr.v4.runtime.misc.NotNull;
 
-import java.time.LocalDate;
+import java.time.YearMonth;
+
 @Entity
 @Table(name = "prediccionDemanda")
 @Getter
@@ -17,9 +18,7 @@ import java.time.LocalDate;
 public class PrediccionDemanda extends  Base{
 
 
-    private LocalDate fechaDesde;
-
-    private LocalDate fechaHasta;
+    private YearMonth mesAnio;
 
     private float valorPredecido;
 

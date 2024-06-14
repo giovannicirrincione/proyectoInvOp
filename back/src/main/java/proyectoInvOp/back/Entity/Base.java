@@ -20,8 +20,13 @@ public class Base implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Temporal(TemporalType.DATE)
     private LocalDate fechaAlta;
+
+    @Temporal(TemporalType.DATE)
     private LocalDate fechaBaja;
+
+    @Temporal(TemporalType.DATE)
     private LocalDate fechaModificacion;
 
     //Antes de que se persista cualquier entidad se le seteara la fechaAlta
