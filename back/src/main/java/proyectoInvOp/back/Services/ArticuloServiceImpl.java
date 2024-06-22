@@ -18,8 +18,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
     ModeloInventarioRepository modeloInventarioRepository;
     @Autowired
     OrdenCompraRepository ordenCompraRepository;
-    @Autowired
-    VentaRepository ventaRepository;
 
     public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository) {
         super(baseRepository);

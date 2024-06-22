@@ -3,7 +3,7 @@ package proyectoInvOp.back.Repositories;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import proyectoInvOp.back.DTOS.DTOValores;
+import proyectoInvOp.back.DTOS.DTOVentas;
 import proyectoInvOp.back.Entity.Venta;
 
 import java.time.LocalDate;
@@ -20,12 +20,16 @@ public interface VentaRepository extends BaseRepository<Venta,Long>{
                                    @Param("fechaDesde") LocalDate fechaDesde,
                                    @Param("fechaHasta") LocalDate fechaHasta);
 
-    @Query("SELECT new com.example.DTOValores(MONTH(v.fechaVenta), YEAR(v.fechaVenta), SUM(dv.cantidad)) " +
-            "FROM Venta v JOIN v.detalleVentas dv " +
-            "WHERE dv.articulo.id = :articuloId AND v.fechaVenta >= :fechaInicio " +
-            "GROUP BY YEAR(v.fechaVenta), MONTH(v.fechaVenta) " +
-            "ORDER BY YEAR(v.fechaVenta) DESC, MONTH(v.fechaVenta) DESC")
-    List<DTOValores> findCantidadVendidaPorMes(@Param("articuloId") Long articuloId,
-                                               @Param("fechaInicio") LocalDate fechaInicio);
+    @Query("SELECT new proyectoInvOp.back.DTOS.DTOVentas(MONTH(v.fechaVenta), SUM(dv.cantidad)) " +
+            "FROM Venta v " +
+            "JOIN v.detalleVentas dv " +
+            "WHERE dv.articulo.id = :idArticulo " +
+            "AND v.fechaVenta BETWEEN :fechaInicio AND :fechaFin " +
+            "GROUP BY MONTH(v.fechaVenta) " +
+            "ORDER BY MONTH(v.fechaVenta)")
+    List<DTOVentas> findVentasMensualesByArticulo(@Param("idArticulo") Long idArticulo,
+                                                  @Param("fechaInicio") LocalDate fechaInicio,
+                                                  @Param("fechaFin") LocalDate fechaFin);
+
 }
 

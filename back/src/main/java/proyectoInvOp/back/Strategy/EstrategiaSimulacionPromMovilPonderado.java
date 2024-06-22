@@ -1,13 +1,12 @@
 package proyectoInvOp.back.Strategy;
 
-import proyectoInvOp.back.DTOS.DTOValores;
-import proyectoInvOp.back.DTOS.DTOValoresOptimos;
+import proyectoInvOp.back.DTOS.*;
 
 import java.util.List;
 
 public class EstrategiaSimulacionPromMovilPonderado implements EstrategiaSimulacion{
     @Override
-    public DTOValoresOptimos simular(List<DTOValores> dtoValores) {
+    public DTOResultadoSimu simular(List<DTOVentas> ventas, List<DTOParametroValor> parametros) {
         System.out.println("esotoy simulando con MOVIL PONDERADO");
         return null;
     }

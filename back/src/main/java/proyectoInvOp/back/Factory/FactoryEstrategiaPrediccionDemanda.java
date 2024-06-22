@@ -17,11 +17,11 @@ public class FactoryEstrategiaPrediccionDemanda {
         return instancia;
     }
 
-    public EstrategiaPrediccionDemanda obtenerEstrategiaPrediccionDemanda(MetodoPrediccion metodoPrediccion){
+    public EstrategiaPrediccionDemanda obtenerEstrategiaPrediccionDemanda(String nombrePrediccion){
 
-        String nombrePredicion = metodoPrediccion.getNombre();
 
-        switch (nombrePredicion){
+
+        switch (nombrePrediccion){
 
             case "PMSuavizadoExp":
                 EstrategiaPrediccionDemanda estrategiaPrediccionDemanda = new EstrategiaPrediccionDemandaPMSuavizadoExpImpl();

@@ -1,11 +1,10 @@
 package proyectoInvOp.back.Strategy;
 
-import proyectoInvOp.back.DTOS.DTOValores;
-import proyectoInvOp.back.DTOS.DTOValoresOptimos;
+import proyectoInvOp.back.DTOS.*;
 
 import java.util.List;
 
 public interface EstrategiaSimulacion {
-    public DTOValoresOptimos simular(List<DTOValores> dtoValores);
+    public DTOResultadoSimu simular(List<DTOVentas> ventas, List<DTOParametroValor> parametros);
 
 }
