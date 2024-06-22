@@ -13,8 +13,8 @@ import proyectoInvOp.back.Services.PrediccionDemandaServiceImpl;
 @RequestMapping(path = "predicciondemanda")
 public class PrediccionDemandaController extends BaseControllerImpl<PrediccionDemanda, PrediccionDemandaServiceImpl> {
 
-    @PostMapping("/predecirDemanda/id")
-    public ResponseEntity<?> predecirDemanda(@PathVariable Long id,@RequestBody int cantPeriodos) {
+    @PostMapping("/predecirDemanda/{id}")
+    public ResponseEntity<?> predecirDemanda(@PathVariable Long id,@RequestParam int cantPeriodos) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(servicio.predecirDemanda(id, cantPeriodos));
         } catch (Exception e) {

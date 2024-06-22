@@ -42,6 +42,7 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
 
     public PrediccionDemanda predecirDemanda(Long id, int cantPeriodos) throws Exception{
 
+
         //Fijarse si ya hay una prediccion hecha
         LocalDate fechaActual = LocalDate.now();
         LocalDate fechaFinal = fechaActual.plus(cantPeriodos, ChronoUnit.MONTHS);
@@ -60,11 +61,13 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
 
         List<ParametroGeneral> parametroGenerales = parametroGeneralRepository.findAllActive();
 
+
+
         int mesesAtras = 0;
 
         for(ParametroGeneral parametroGeneral : parametroGenerales){
             String nombre = parametroGeneral.getNombreParametro();
-            if ("PeridosHistoricos".equals(nombre)){
+            if ("Periodos historicos".equals(nombre)){
                 mesesAtras = parametroGeneral.getValorParametro();
                 break;
             }
@@ -72,15 +75,23 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
         //obtenemos las ventas historicas
         List<DTOVentas> ventasHistoricas = obtenerDemandaHistorica(id,mesesAtras);
 
+        //for (DTOVentas v: ventasHistoricas) {
+            //    System.out.println(v.getCantidadVentas());
+        //}
+
         //obtenemos los parametros
         List<DTOParametroValor> listaParametros = obtenerParametros();
 
-        //Obtengo todos los metodos de prediccion
+        //for (DTOParametroValor par: listaParametros) {
+        //    System.out.println(par.getNombreParametro());
+        //}
 
+        //Obtengo todos los metodos de prediccion
         List<MetodoPrediccion> metodoPrediccion = metodoPrediccionRepository.findAllActive();
 
-        //simulo
 
+
+        //simulo
         DTOResultadoSimu resultadoSimu = obtenerResultadosSimulacion(ventasHistoricas,listaParametros,metodoPrediccion);
 
         //Uso los parametros de la mejor simulacion para predecir el futuro
@@ -107,16 +118,22 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
     }
     public List<DTOVentas> obtenerDemandaHistorica (Long id, int mesesAtras){
 
+
         LocalDate fechaFin = LocalDate.now();
         LocalDate fechaInicio = fechaFin.minusMonths(mesesAtras);
 
+
         List<DTOVentas> ventas = ventaRepository.findVentasMensualesByArticulo(id, fechaInicio, fechaFin);
+
+        for (DTOVentas v: ventas) {
+            System.out.println(v.getMes()+" "+v.getCantidadVentas());
+        }
 
         return ventas;
 
     }
 
-    public  List<DTOParametroValor> obtenerParametros (){
+    public  List<DTOParametroValor> obtenerParametros(){
 
         List<DTOParametroValor> listaParametros = new ArrayList<>();
 
