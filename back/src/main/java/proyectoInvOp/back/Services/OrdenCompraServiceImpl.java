@@ -1,55 +1,147 @@
 package proyectoInvOp.back.Services;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import proyectoInvOp.back.Entity.Articulo;
-import proyectoInvOp.back.Entity.DetalleOrden;
+import proyectoInvOp.back.Entity.EstadoOrdenCompra;
 import proyectoInvOp.back.Entity.OrdenCompra;
-import proyectoInvOp.back.Repositories.ArticuloRepository;
+import proyectoInvOp.back.Entity.Proveedor;
+import proyectoInvOp.back.PatronObservador.ArticuloObserver;
+import proyectoInvOp.back.PatronObservador.OrdenCompraObservable;
 import proyectoInvOp.back.Repositories.BaseRepository;
+import proyectoInvOp.back.Repositories.EstadoOrdenCompraRepository;
 import proyectoInvOp.back.Repositories.OrdenCompraRepository;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> implements OrdenCompraService{
+public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> implements OrdenCompraService {
+    @Autowired
+    ArticuloObserver articuloObserver;
     @Autowired
     OrdenCompraRepository ordenCompraRepository;
-    @PersistenceContext
-    private EntityManager entityManager;
-
-
-    public OrdenCompraServiceImpl(BaseRepository<OrdenCompra, Long> baseRepository, OrdenCompraRepository ordenCompraRepository) {
+    @Autowired
+    EstadoOrdenCompraRepository estadoOrdenCompraRepository;
+    @Autowired
+    public OrdenCompraServiceImpl(BaseRepository<OrdenCompra, Long> baseRepository, ArticuloObserver articuloObserver) {
         super(baseRepository);
+        this.articuloObserver = articuloObserver;
+
     }
     @Override
-    @Transactional
     public OrdenCompra save(OrdenCompra ordenCompra) throws Exception {
-        try {
-            // Asegúrate de que cada `DetalleOrden` esté gestionado por el `EntityManager`
-            List<DetalleOrden> managedDetalles = new ArrayList<>();
-            for (DetalleOrden detalle : ordenCompra.getDetallesOrden()) {
-                if (detalle.getId() != null) {
-                    // Si `detalle` ya tiene un ID, está desconectado, así que usa `merge`
-                    detalle = entityManager.merge(detalle);
-                } else {
-                    // Si es un nuevo `detalle`, simplemente persístelo
-                    entityManager.persist(detalle);
-                }
-                managedDetalles.add(detalle);
-            }
-            // Reemplaza la lista de detalles en `ordenCompra` con la lista gestionada
-            ordenCompra.setDetallesOrden(managedDetalles);
+        try{
+            boolean bandera = true;
 
-            return super.save(ordenCompra);
-        } catch (Exception e) {
-            throw new Exception("Error saving OrdenCompra", e);
+            List<OrdenCompra> ordenCompraList = ordenCompraRepository.findAllByArticuloId(ordenCompra.getArticulo().getId());
+            //check de otra orden de comora activa para el articulo
+            for (OrdenCompra ordenCompra1 : ordenCompraList){
+                EstadoOrdenCompra estadoOrdenCompra = ordenCompra.getEstadoOrdenCompra();
+                String estadoActual = estadoOrdenCompra.getNombre();
+                if ("Pendiente".equals(estadoActual) || "En curso".equals(estadoActual)) {
+                    bandera = false;
+                    break;
+
+                }
+            }
+
+            if (bandera){
+                Articulo articulo = ordenCompra.getArticulo();
+
+                Proveedor proveedorPredeterminado = articulo.getProveedorPredeterminado();
+
+                ordenCompra.setProveedor(proveedorPredeterminado);
+
+                EstadoOrdenCompra estadoOrdenCompra = estadoOrdenCompraRepository.findByNombre("Pendiente");
+
+                ordenCompra.setEstadoOrdenCompra(estadoOrdenCompra);
+
+                OrdenCompra ordenCompra1 = ordenCompraRepository.save(ordenCompra);
+
+                return ordenCompra1;
+            }else {
+                throw new Exception("Error este articulo tiene una oreden de compra");
+            }
+        }catch (Exception e){
+            throw new Exception("Error saving Orden compra", e);
         }
+
+
     }
+
+    @Transactional
+    public boolean cambioEstado(OrdenCompra ordenCompra, Long id) throws Exception{
+        try {
+            //Se compara el estado seleccionado con el estado actual para verificar que se puede modificar
+            //Si son iguales termina la funcion
+            Optional<EstadoOrdenCompra> estadoOrdenCompraOptional = estadoOrdenCompraRepository.findActiveById(id);
+
+            EstadoOrdenCompra estadoOrdenCompra = estadoOrdenCompraOptional.get();
+
+                if (ordenCompra.getEstadoOrdenCompra().equals(estadoOrdenCompra)) {
+
+                    throw new Exception("El estado seleccionado es igual al estado actual");
+                }
+
+                //Verificamos que el estado seleccionado sea uno posible
+
+                //Estado actual
+                String estadoActual = ordenCompra.getEstadoOrdenCompra().getNombre();
+
+                //Logica para cada estado
+
+
+                //Si esta en PENDIENTE, solo puede ser cambiada a EN CURSO
+                if ("Pendiente".equals(estadoActual)) {
+                    if ("Enviada".equals(estadoOrdenCompra.getNombre())) {
+                        throw new Exception("No se puede asignar el estado");
+                    }
+                    //Agregar logica MODIFICACION DE ESTADO
+                    ordenCompra.setEstadoOrdenCompra(estadoOrdenCompra);
+                }
+
+                //Si esta EN CURSO, solo puede ser cambiado a ENVIADO
+                if ("En curso".equals(estadoActual)) {
+                    if ("Pendiente".equals(estadoOrdenCompra.getNombre())) {
+                        throw new Exception("No se puede asignar el estado");
+                    }
+
+                    ordenCompra.setFechaLlegada(LocalDate.now());
+                    ordenCompra.setEstadoOrdenCompra(estadoOrdenCompra);
+                    super.update(ordenCompra.getId(),ordenCompra);
+
+                    //Agregar logica de MODIFICACION DE ESTADO
+                    OrdenCompraObservable ordenCompraObservable = new OrdenCompraObservable(ordenCompra);
+                    ordenCompraObservable.addObserver(articuloObserver);
+                    ordenCompraObservable.notifyObservers();
+
+                }
+
+                //Si esta ENVIADA, no se puede modificar el Estado
+                if (estadoActual == "Enviada") {
+                    throw new Exception("La orden de compra ya se ha entregado!");
+                }
+
+                return true;
+
+            }
+        catch(Exception e ){
+                throw new Exception(e.getMessage());
+            }
+
+
+    }
+
+
+
 
 
 }
+
+
+
+

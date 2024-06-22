@@ -8,6 +8,8 @@ import lombok.Setter;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import java.time.LocalDate;
+import java.util.List;
+
 @Entity
 @Table(name = "prediccionDemanda")
 @Getter
@@ -23,6 +25,8 @@ public class PrediccionDemanda extends  Base{
 
     private float valorPredecido;
 
+    private List<Double> predicciones;
+
     @NotNull
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name = "articuloId")
@@ -32,4 +36,13 @@ public class PrediccionDemanda extends  Base{
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name = "metodoPrediccionId")
     private MetodoPrediccion metodoPrediccion;
+
+    public PrediccionDemanda(List<Double> predicciones) {
+        this.predicciones = predicciones;
+    }
+
+    public List<Double> getPredicciones() {
+        return predicciones;
+    }
+
 }

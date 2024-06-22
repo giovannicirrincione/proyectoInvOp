@@ -19,7 +19,7 @@ public class Base implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(updatable = false)
     private LocalDate fechaAlta;
     private LocalDate fechaBaja;
     private LocalDate fechaModificacion;

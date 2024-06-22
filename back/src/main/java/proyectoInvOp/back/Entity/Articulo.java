@@ -7,10 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.antlr.v4.runtime.misc.NotNull;
-
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
+
 
 @Entity
 @Table(name = "articulo")
@@ -19,7 +17,6 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Articulo extends Base {
-
 
     private String nombre;
 
@@ -39,9 +36,8 @@ public class Articulo extends Base {
     @JoinColumn(name = "familiaArticuloId")
     private FamiliaArticulo familiaArticulo;
 
-    @JsonIgnore
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
-    @JoinColumn(name = "provedorDeterminadoId")
+    @JoinColumn(name = "proveedorPredeterminadoId")
     private Proveedor proveedorPredeterminado;
 
     @JsonIgnore
