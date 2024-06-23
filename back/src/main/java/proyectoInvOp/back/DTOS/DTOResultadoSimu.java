@@ -13,5 +13,5 @@ public class DTOResultadoSimu {
     private String nombreMetodo;
     private String parametroUsado;
     private float valorParametro;
-    private int errorObtenido;
+    private double errorObtenido;
 }

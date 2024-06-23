@@ -4,7 +4,6 @@ public class DTOVentas {
     private int mes;
     private int cantidadVentas;
 
-    // Constructores, getters y setters
     public DTOVentas(int mes, int cantidadVentas) {
         this.mes = mes;
         this.cantidadVentas = cantidadVentas;

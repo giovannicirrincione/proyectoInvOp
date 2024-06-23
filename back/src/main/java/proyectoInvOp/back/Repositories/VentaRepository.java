@@ -20,9 +20,9 @@ public interface VentaRepository extends BaseRepository<Venta,Long>{
                                    @Param("fechaDesde") LocalDate fechaDesde,
                                    @Param("fechaHasta") LocalDate fechaHasta);
 
-    @Query("SELECT new proyectoInvOp.back.DTOS.DTOVentas(MONTH(v.fechaVenta), SUM(dv.cantidad)) " +
+    @Query("SELECT MONTH(v.fechaVenta) as mes, SUM(dv.cantidad) as cantidadVentas " +
             "FROM Venta v " +
-            "JOIN v.detalleVentas dv " +
+            "JOIN detalleVentas dv ON v.id = dv.id " +
             "WHERE dv.articulo.id = :idArticulo " +
             "AND v.fechaVenta BETWEEN :fechaInicio AND :fechaFin " +
             "GROUP BY MONTH(v.fechaVenta) " +
