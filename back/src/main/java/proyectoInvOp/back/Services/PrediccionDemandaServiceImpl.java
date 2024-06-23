@@ -171,7 +171,6 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
 
         for (MetodoPrediccion metodoPrediccion : metodos){
             //obtengo la estrategia
-            System.out.println("holap");
             EstrategiaSimulacion estrategiaSimulacion = factorySimulacionSeleccionParametros.obtenerEstrategiaSimulacion(metodoPrediccion);
             //simulo
             DTOResultadoSimu resultadoSimu = estrategiaSimulacion.simular(ventas,parametros);
