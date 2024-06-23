@@ -88,6 +88,7 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
         //simulo
         DTOResultadoSimu resultadoSimu = obtenerResultadosSimulacion(ventasHistoricas,listaParametros,metodosPrediccion);
 
+
         //Uso los parametros de la mejor simulacion para predecir el futuro
 
         String nombreMetodo = resultadoSimu.getNombreMetodo();
@@ -127,6 +128,7 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
                 }
             }
         }
+
 
         List<DTOVentas> resultado = new ArrayList<>();
         for (Map.Entry<Month, Integer> entry : ventasPorMes.entrySet()) {
