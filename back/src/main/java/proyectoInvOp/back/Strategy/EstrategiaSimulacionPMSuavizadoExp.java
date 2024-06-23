@@ -79,7 +79,4 @@ public class EstrategiaSimulacionPMSuavizadoExp implements EstrategiaSimulacion 
         System.out.println("               ");
         return resultadoSimu;
     }
-
-
-
 }
