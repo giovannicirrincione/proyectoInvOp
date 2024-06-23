@@ -1,10 +1,27 @@
 package proyectoInvOp.back.DTOS;
 
-public interface DTOVentas {
-    int getMes();
+public class DTOVentas {
+    private int mes;
+    private int cantidadVentas;
 
-    void setMes();
+    public DTOVentas(int mes, int cantidadVentas) {
+        this.mes = mes;
+        this.cantidadVentas = cantidadVentas;
+    }
 
-    int getCantidadVentas();
-    void setCantidadVentas();
+    public int getMes() {
+        return mes;
+    }
+
+    public void setMes(int mes) {
+        this.mes = mes;
+    }
+
+    public int getCantidadVentas() {
+        return cantidadVentas;
+    }
+
+    public void setCantidadVentas(int cantidadVentas) {
+        this.cantidadVentas = cantidadVentas;
+    }
 }

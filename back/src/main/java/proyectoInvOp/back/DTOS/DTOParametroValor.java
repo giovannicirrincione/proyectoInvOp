@@ -2,10 +2,10 @@ package proyectoInvOp.back.DTOS;
 
 public class DTOParametroValor {
     private String nombreParametro;
-    private int valorParametro;
+    private float valorParametro;
 
     // Constructor
-    public DTOParametroValor(String nombreParametro, int valorParametro) {
+    public DTOParametroValor(String nombreParametro, float valorParametro) {
         this.nombreParametro = nombreParametro;
         this.valorParametro = valorParametro;
     }
@@ -19,11 +19,11 @@ public class DTOParametroValor {
         this.nombreParametro = nombreParametro;
     }
 
-    public int getValorParametro() {
+    public float getValorParametro() {
         return valorParametro;
     }
 
-    public void setValorParametro(int valorParametro) {
+    public void setValorParametro(float valorParametro) {
         this.valorParametro = valorParametro;
     }
 }

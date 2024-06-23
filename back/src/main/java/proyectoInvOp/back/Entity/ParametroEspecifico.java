@@ -18,5 +18,5 @@ public class ParametroEspecifico extends Base{
 
     private String nombreParametro;
 
-    private int valorParametro;
+    private float valorParametro;
 }
