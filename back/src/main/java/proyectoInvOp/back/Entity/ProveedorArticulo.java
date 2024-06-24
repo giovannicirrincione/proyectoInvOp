@@ -12,8 +12,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DemoraProveedorArticulo extends Base{
+public class ProveedorArticulo extends Base{
 
+    private float costoPedido;
 
     private float tiempoDemora;
 

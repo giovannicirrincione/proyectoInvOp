@@ -26,7 +26,7 @@ public class Proveedor extends Base{
 
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<DemoraProveedorArticulo> demoraProveedorArticulos;
+    private List<ProveedorArticulo> proveedorArticulos;
 
 
 }

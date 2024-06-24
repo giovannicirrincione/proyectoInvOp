@@ -1,8 +1,8 @@
 package proyectoInvOp.back.Repositories;
 
 import org.springframework.stereotype.Repository;
-import proyectoInvOp.back.Entity.DemoraProveedorArticulo;
+import proyectoInvOp.back.Entity.ProveedorArticulo;
 
 @Repository
-public interface DemoraProveedorArticuloRepository extends BaseRepository<DemoraProveedorArticulo,Long> {
+public interface DemoraProveedorArticuloRepository extends BaseRepository<ProveedorArticulo,Long> {
 }
