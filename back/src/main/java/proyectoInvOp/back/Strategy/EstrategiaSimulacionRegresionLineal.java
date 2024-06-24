@@ -10,11 +10,6 @@ public class EstrategiaSimulacionRegresionLineal implements EstrategiaSimulacion
     @Override
     public DTOResultadoSimu simular(List<DTOVentas> ventas, List<DTOParametroValor> parametros) {
 
-        System.out.println("               ");
-        System.out.println("******SIMULACION REGRESION LINEAL*********");
-        for (DTOParametroValor par : parametros) {
-            System.out.println("nombre parametro: " + par.getNombreParametro() + ", valor parametro: " + par.getValorParametro());
-        }
 
         float mesesAtras = 0;
 
@@ -27,22 +22,18 @@ public class EstrategiaSimulacionRegresionLineal implements EstrategiaSimulacion
 
         LocalDate fechaActual = LocalDate.now();
         LocalDate fechaDesde = fechaActual.minusMonths((long) mesesAtras);
-        System.out.println(fechaActual);
-        System.out.println(fechaDesde);
 
         List<Integer> meses = new ArrayList<>();
         List<Float> demandas = new ArrayList<>();
 
         while (!fechaDesde.isAfter(fechaActual)) {
-            System.out.println("Procesando mes: " + fechaDesde.getMonth());
 
             for (DTOVentas venta : ventas) {
-                if (venta.getMes() == fechaDesde.getMonthValue()) {
+                if (venta.getFecha().getMonthValue() == fechaDesde.getMonthValue()) {
                     int mes = ventas.indexOf(venta);
                     float demanda = venta.getCantidadVentas();
                     meses.add(mes);
                     demandas.add(demanda);
-                    System.out.println("Demanda real en mes " + fechaDesde.getMonth() + ": " + demanda);
                     break;
                 }
             }
@@ -63,34 +54,33 @@ public class EstrategiaSimulacionRegresionLineal implements EstrategiaSimulacion
         float pendiente = (n * sumaXY - sumaX * sumaY) / (n * sumaX2 - sumaX * sumaX);
         float interseccion = (sumaY - pendiente * sumaX) / n;
 
-        System.out.println("Pendiente (m): " + pendiente);
-        System.out.println("Intersección (b): " + interseccion);
 
         float sumaErrores = 0;
         fechaDesde = LocalDate.now().minusMonths((long) mesesAtras);
         while (!fechaDesde.isAfter(fechaActual)) {
-            int mesActual = ventas.indexOf(new DTOVentas(fechaDesde.getMonthValue(), 0));
+            int mesActual = ventas.indexOf(new DTOVentas(fechaDesde, 0));
             float pronostico = pendiente * mesActual + interseccion;
             for (DTOVentas venta : ventas) {
-                if (venta.getMes() == fechaDesde.getMonthValue()) {
+                if (venta.getFecha().getMonthValue() == fechaDesde.getMonthValue()) {
                     float demandaReal = venta.getCantidadVentas();
                     float error = Math.abs(demandaReal - pronostico);
                     sumaErrores += error;
-                    System.out.println("Pronóstico: " + pronostico);
-                    System.out.println("Error: " + error);
                     break;
                 }
             }
             fechaDesde = fechaDesde.plusMonths(1);
         }
 
-        System.out.println("Error total: " + sumaErrores);
 
         DTOResultadoSimu resultadoSimu = new DTOResultadoSimu();
-        resultadoSimu.setErrorObtenido(sumaErrores);
+        resultadoSimu.setErrorObtenido((double)sumaErrores);
+        resultadoSimu.setNombreMetodo("RegresionLineal");
 
-        System.out.println("**************************************");
-        System.out.println("               ");
+        System.out.println("******************");
+        System.out.println("simule con REG LINEAL");
+        System.out.println("obtuve" + resultadoSimu.getErrorObtenido());
+        System.out.println("******************");
+
         return resultadoSimu;
     }
 }

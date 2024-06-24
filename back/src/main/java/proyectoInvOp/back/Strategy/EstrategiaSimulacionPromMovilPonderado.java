@@ -2,6 +2,7 @@ package proyectoInvOp.back.Strategy;
 
 import proyectoInvOp.back.DTOS.*;
 
+import java.nio.channels.FileLock;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +11,7 @@ public class EstrategiaSimulacionPromMovilPonderado implements EstrategiaSimulac
     @Override
     public DTOResultadoSimu simular(List<DTOVentas> ventas, List<DTOParametroValor> parametros) {
 
-        System.out.println("               ");
-        System.out.println("******SIMULACION PM PONDERADO*********");
-        for (DTOParametroValor par:parametros){
-            System.out.println("nombre parametro: "+par.getNombreParametro()+", valor parametro: "+par.getValorParametro());
-        }
+
 
         float mesesAtras = 0;
         List<Float> pesos = new ArrayList<>();
@@ -23,7 +20,7 @@ public class EstrategiaSimulacionPromMovilPonderado implements EstrategiaSimulac
             String nombre = param.getNombreParametro();
             if ("Periodos historicos".equals(nombre)) {
                 mesesAtras = param.getValorParametro();
-            } else if (nombre.startsWith("peso")) {
+            } else if (nombre.startsWith("pesoMensual")) {
                 pesos.add(param.getValorParametro());
             }
         }
@@ -34,23 +31,22 @@ public class EstrategiaSimulacionPromMovilPonderado implements EstrategiaSimulac
 
         LocalDate fechaActual = LocalDate.now();
         LocalDate fechaDesde = fechaActual.minusMonths((long) mesesAtras);
-        System.out.println(fechaActual);
-        System.out.println(fechaDesde);
+
 
         float sumaErrores = 0;
         List<Float> demandasReales = new ArrayList<>();
         while (!fechaDesde.isAfter(fechaActual)) {
-            System.out.println("Procesando mes: " + fechaDesde.getMonth());
+
 
             float demandaReal = 0;
             boolean tieneVentas = false;
 
             for (DTOVentas venta : ventas) {
-                if (venta.getMes() == fechaDesde.getMonthValue()) {
+                if (venta.getFecha().getMonthValue() == fechaDesde.getMonthValue()) {
                     demandaReal = venta.getCantidadVentas();
                     demandasReales.add(demandaReal);
                     tieneVentas = true;
-                    System.out.println("Demanda real en mes " + fechaDesde.getMonth() + ": " + demandaReal);
+
                     break;
                 }
             }
@@ -68,21 +64,26 @@ public class EstrategiaSimulacionPromMovilPonderado implements EstrategiaSimulac
 
                     float err = Math.abs(demandaReal - pronostico);
                     sumaErrores += err;
-                    System.out.println("Pronóstico: " + pronostico);
-                    System.out.println("Error: " + err);
+
                 }
             }
 
             fechaDesde = fechaDesde.plusMonths(1);
         }
 
-        System.out.println("Error total: " + sumaErrores);
+
 
         DTOResultadoSimu resultadoSimu = new DTOResultadoSimu();
-        resultadoSimu.setErrorObtenido(sumaErrores);
+        resultadoSimu.setErrorObtenido((double)sumaErrores);
+        resultadoSimu.setNombreMetodo("PromMovilPonderado");
+        //agregamos esto pq despues lo necesitamos en la prediccion
+        resultadoSimu.setValoresParametros(pesos);
 
-        System.out.println("**************************************");
-        System.out.println("               ");
+        System.out.println("******************");
+        System.out.println("simule con PROMMOVILPONDERADO");
+        System.out.println("obtuve  " + resultadoSimu.getErrorObtenido());
+        System.out.println("******************");
+
         return resultadoSimu;
     }
 }

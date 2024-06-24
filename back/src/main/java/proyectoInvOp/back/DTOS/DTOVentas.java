@@ -1,20 +1,26 @@
 package proyectoInvOp.back.DTOS;
 
+import java.time.LocalDate;
+
 public class DTOVentas {
-    private int mes;
+    private LocalDate fecha;
     private int cantidadVentas;
 
-    public DTOVentas(int mes, int cantidadVentas) {
-        this.mes = mes;
+    public DTOVentas(LocalDate fecha, int cantidadVentas) {
+
         this.cantidadVentas = cantidadVentas;
+        this.fecha = fecha;
+
     }
 
-    public int getMes() {
-        return mes;
+
+    public LocalDate getFecha() {
+        return fecha;
     }
 
-    public void setMes(int mes) {
-        this.mes = mes;
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
     }
 
     public int getCantidadVentas() {

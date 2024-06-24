@@ -40,6 +40,6 @@ public class EstrategiaPrediccionDemandaRegresionLinealImpl implements Estrategi
             predicciones.add(y);
         }
 
-        return new PrediccionDemanda(predicciones);
+        return null;
     }
 }

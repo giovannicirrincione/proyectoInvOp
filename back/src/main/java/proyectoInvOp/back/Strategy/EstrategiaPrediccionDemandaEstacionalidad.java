@@ -35,6 +35,6 @@ public class EstrategiaPrediccionDemandaEstacionalidad implements EstrategiaPred
             predicciones.add(promediosEstacionales[indiceEstacional]);
         }
 
-        return new PrediccionDemanda(predicciones);
+        return null;
     }
 }
