@@ -12,7 +12,6 @@ public class EstrategiaSimulacionPromMovilPonderado implements EstrategiaSimulac
     public DTOResultadoSimu simular(List<DTOVentas> ventas, List<DTOParametroValor> parametros) {
 
 
-
         float mesesAtras = 0;
         List<Float> pesos = new ArrayList<>();
 
@@ -25,13 +24,19 @@ public class EstrategiaSimulacionPromMovilPonderado implements EstrategiaSimulac
             }
         }
 
-        if (pesos.size() != mesesAtras) {
-            throw new IllegalArgumentException("La cantidad de pesos no coincide con la cantidad de periodos históricos");
+        // Asegurarse de que solo se consideren los últimos 12 meses
+        int maxMesesConsiderados = 12;
+        if (pesos.size() > maxMesesConsiderados) {
+            pesos = pesos.subList(0, maxMesesConsiderados);
+        }
+
+        // Agregar ceros para completar los 12 meses si hay menos pesos
+        while (pesos.size() < maxMesesConsiderados) {
+            pesos.add(0.0f);
         }
 
         LocalDate fechaActual = LocalDate.now();
         LocalDate fechaDesde = fechaActual.minusMonths((long) mesesAtras);
-
 
         float sumaErrores = 0;
         List<Float> demandasReales = new ArrayList<>();

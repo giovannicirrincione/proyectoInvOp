@@ -7,7 +7,9 @@ import proyectoInvOp.back.Entity.ParametroGeneral;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EstrategiaSimulacionPMSuavizadoExp implements EstrategiaSimulacion {
     @Override
@@ -28,18 +30,24 @@ public class EstrategiaSimulacionPMSuavizadoExp implements EstrategiaSimulacion 
 
         LocalDate fechaActual = LocalDate.now();
 
+        // Filtrar y ordenar las ventas de los últimos 12 meses
+        List<DTOVentas> ventasUltimos12Meses = ventas.stream()
+                .filter(venta -> venta.getFecha().isAfter(fechaActual.minusMonths(12)))
+                .sorted(Comparator.comparing(DTOVentas::getFecha))
+                .collect(Collectors.toList());
 
         List<Float> errores = new ArrayList<>();
 
+
         float demandaReal = 0;
         for (Float alfa: alfas){
-            LocalDate fechaDesde = fechaActual.minusMonths((long)mesesAtras);
+            LocalDate fechaDesde = fechaActual.minusMonths((long)12);
             float pronostico = 0;
             boolean primerValor = true;
             float sumaErrores = 0;
             while (!fechaDesde.isAfter(fechaActual)) {
 
-                for (DTOVentas venta : ventas) {
+                for (DTOVentas venta : ventasUltimos12Meses) {
                     if (venta.getFecha().getMonthValue() == fechaDesde.getMonthValue()) {
 
 

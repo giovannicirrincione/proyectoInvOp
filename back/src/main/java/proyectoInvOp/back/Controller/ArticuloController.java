@@ -25,7 +25,7 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
         }
     }
     @Override
-    @PutMapping("/delete/{id}")
+    @PutMapping("delete/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
             if(servicio.bajaArticulo(id)) {

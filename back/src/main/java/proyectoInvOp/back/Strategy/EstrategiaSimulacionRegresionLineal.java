@@ -2,9 +2,11 @@ package proyectoInvOp.back.Strategy;
 
 import proyectoInvOp.back.DTOS.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class EstrategiaSimulacionRegresionLineal implements EstrategiaSimulacion{
     @Override
@@ -21,14 +23,22 @@ public class EstrategiaSimulacionRegresionLineal implements EstrategiaSimulacion
         }
 
         LocalDate fechaActual = LocalDate.now();
-        LocalDate fechaDesde = fechaActual.minusMonths((long) mesesAtras);
+        LocalDate fechaDesde = fechaActual.minusMonths(24);
+        LocalDate fechaHasta = fechaActual.minusMonths(12);
+
+        // Filtrar y ordenar las ventas de los meses 12 al 24
+        LocalDate finalFechaDesde = fechaDesde;
+        LocalDate finalFechaHasta = fechaHasta;
+        List<DTOVentas> ventasMeses12a24 = ventas.stream()
+                .filter(venta -> !venta.getFecha().isBefore(finalFechaDesde) && venta.getFecha().isBefore(finalFechaHasta))
+                .sorted(Comparator.comparing(DTOVentas::getFecha))
+                .collect(Collectors.toList());
 
         List<Integer> meses = new ArrayList<>();
         List<Float> demandas = new ArrayList<>();
 
-        while (!fechaDesde.isAfter(fechaActual)) {
-
-            for (DTOVentas venta : ventas) {
+        while (!fechaDesde.isAfter(fechaHasta)) {
+            for (DTOVentas venta : ventasMeses12a24) {
                 if (venta.getFecha().getMonthValue() == fechaDesde.getMonthValue()) {
                     int mes = ventas.indexOf(venta);
                     float demanda = venta.getCantidadVentas();
@@ -37,7 +47,6 @@ public class EstrategiaSimulacionRegresionLineal implements EstrategiaSimulacion
                     break;
                 }
             }
-
             fechaDesde = fechaDesde.plusMonths(1);
         }
 
@@ -54,10 +63,12 @@ public class EstrategiaSimulacionRegresionLineal implements EstrategiaSimulacion
         float pendiente = (n * sumaXY - sumaX * sumaY) / (n * sumaX2 - sumaX * sumaX);
         float interseccion = (sumaY - pendiente * sumaX) / n;
 
-
+        // Ahora simulamos y comparamos los meses 24 al 36
         float sumaErrores = 0;
-        fechaDesde = LocalDate.now().minusMonths((long) mesesAtras);
-        while (!fechaDesde.isAfter(fechaActual)) {
+        fechaDesde = fechaHasta;
+        fechaHasta = fechaActual;
+
+        while (!fechaDesde.isAfter(fechaHasta)) {
             int mesActual = ventas.indexOf(new DTOVentas(fechaDesde, 0));
             float pronostico = pendiente * mesActual + interseccion;
             for (DTOVentas venta : ventas) {

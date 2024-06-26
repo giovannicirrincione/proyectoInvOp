@@ -2,6 +2,7 @@ package proyectoInvOp.back.Strategy;
 
 import proyectoInvOp.back.DTOS.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EstrategiaSimulacionEstacionalidad implements EstrategiaSimulacion{
@@ -10,60 +11,54 @@ public class EstrategiaSimulacionEstacionalidad implements EstrategiaSimulacion{
 
         DTOResultadoSimu resultadoSimu = new DTOResultadoSimu();
 
-        //if(ventas.size()<36){
-          //  resultadoSimu.setNombreMetodo("Estacionalidad");
-            //resultadoSimu.setErrorObtenido(10000.0);
-            //resultadoSimu.setParametroUsado("no tiene");
-            //return resultadoSimu;
-        //}
+        // Paso 1: Calcular el promedio general
+        double promGeneral = 0;
+        double totalVentas = 0;
 
+        for (DTOVentas venta : ventas) {
+            totalVentas += venta.getCantidadVentas();
+        }
 
-        // Inicializamos los arrays para las sumas y los índices
-        float[] sumasMensuales = new float[12];
-        int[] conteoMensual = new int[12];
+        promGeneral = totalVentas / ventas.size();
 
-        // Sumamos las ventas por mes de 2021 y 2022
-        for (int i = 0; i < ventas.size() - 12; i++) {
-            int mes = ventas.get(i).getFecha().getMonthValue() - 1;
-            sumasMensuales[mes] += ventas.get(i).getCantidadVentas();
-            conteoMensual[mes]++;
+        // Paso 2: Calcular las ventas mensuales para los primeros 24 meses
+        int[] ventaMensual = new int[12]; // Cambiado a 12 meses
+
+        for (int i = 0; i < 24; i++) {
+            int mesVenta = ventas.get(i).getFecha().getMonthValue() - 1;
+            int cantVendida = ventas.get(i).getCantidadVentas();
+            ventaMensual[mesVenta] += cantVendida;
+        }
+
+        // Paso 3: Calcular el índice mensual para los primeros 24 meses
+        double[] indiceMensual = new double[12]; // Cambiado a 12 meses
+
+        for (int i = 0; i < indiceMensual.length; i++) {
+            indiceMensual[i] = (ventaMensual[i] / 2.0) / promGeneral; // Cambiado a 2.0 para dividir correctamente
+        }
+
+        // Paso 4: Predecir las ventas para los meses 25 a 36
+        List<Double> predicciones = new ArrayList<>();
+        for (int i = 24; i < 36; i++) {
+            int mesIndice = (i % 12); // Use 12 months period
+            double prediccion = promGeneral * indiceMensual[mesIndice];
+            predicciones.add(prediccion);
         }
 
 
-        // Calcular el promedio general D
-        float D = 0;
-        for (float suma : sumasMensuales) {
-            D += suma;
-        }
-        D /= 24; // 24 es el número total de meses (2 años * 12 meses)
-
-        // Calcular los índices de estacionalidad
-        float[] indicesEstacionalidad = new float[12];
-        for (int i = 0; i < 12; i++) {
-            indicesEstacionalidad[i] = sumasMensuales[i] / D;
+        // Paso 5: Comparar las predicciones con los valores reales y calcular el error absoluto medio
+        double error = 0;
+        for (int i = 24; i < 35; i++) {
+            int valorReal = ventas.get(i).getCantidadVentas();
+            double valorPredicho = predicciones.get(i - 24);
+            error += Math.abs(valorPredicho - valorReal);
         }
 
-        // Generar las predicciones para 2023 usando Yc(i) = D * I(i)
-        float[] predicciones2023 = new float[12];
-        for (int i = 0; i < 12; i++) {
-            predicciones2023[i] = D * indicesEstacionalidad[i];
-        }
 
-        //VER ACA QUE HAY Q METER MAS DATOS EN LA BD
-        // Calcular el error absoluto total
-        float errorTotal = 0;
-        for (int i = 0; i < 12; i++) {
-            float valorReal = ventas.get(ventas.size() - 12 + i).getCantidadVentas();
-            float valorPredicho = predicciones2023[i];
-            errorTotal += Math.abs(valorPredicho - valorReal);
-
-        }
-
-        resultadoSimu.setErrorObtenido((double) errorTotal);
+        resultadoSimu.setErrorObtenido(error);
 
         resultadoSimu.setNombreMetodo("Estacionalidad");
-
-
+        System.out.println("******************");
         System.out.println("******************");
         System.out.println("simule con estacionalidad");
         System.out.println("obtuve" + resultadoSimu.getErrorObtenido());

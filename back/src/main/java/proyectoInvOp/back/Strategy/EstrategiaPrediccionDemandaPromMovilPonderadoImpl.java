@@ -11,6 +11,7 @@ import proyectoInvOp.back.Repositories.ParametrosEspecificosRepository;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class EstrategiaPrediccionDemandaPromMovilPonderadoImpl implements EstrategiaPrediccionDemanda{
     @Autowired
@@ -22,6 +23,12 @@ public class EstrategiaPrediccionDemandaPromMovilPonderadoImpl implements Estrat
 
         //ordeno la lista de mas viejo a mas nuevos
         ventas.sort(Comparator.comparing(DTOVentas::getFecha));
+
+        //Dejamos solo las ventas de los ultimos 12 meses
+        List<DTOVentas> ventasUltimos12Meses = ventas.stream()
+                .filter(venta -> venta.getFecha().isAfter(LocalDate.now().minusMonths(12)))
+                .sorted(Comparator.comparing(DTOVentas::getFecha))
+                .collect(Collectors.toList());
 
         //almacenamos la predicciones
         List<Integer> predicciones = new ArrayList<>();
@@ -36,7 +43,7 @@ public class EstrategiaPrediccionDemandaPromMovilPonderadoImpl implements Estrat
         List<Integer> valoresAuxiliares = new ArrayList<>();
 
         //Llenamos el valoresAuxiliales con las catidad vendidas
-        for (DTOVentas ventas1 : ventas){
+        for (DTOVentas ventas1 : ventasUltimos12Meses){
             Integer valor = ventas1.getCantidadVentas();
             valoresAuxiliares.add(valor);
         }
