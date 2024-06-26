@@ -18,6 +18,10 @@ import java.util.List;
 @AllArgsConstructor
 public class Articulo extends Base {
 
+    private float costoPedido;
+
+    private int tpoEntreControlesStock;
+
     private String nombre;
 
     private String descripcion;

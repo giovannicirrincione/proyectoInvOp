@@ -118,6 +118,8 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
 
         prediccionDemanda.setMetodoPrediccion(metodoPrediccionSeleccionado);
 
+        prediccionDemanda.setFechaDesde(LocalDate.now());
+
         prediccionDemandaRepository.save(prediccionDemanda);
 
         return prediccionDemanda;

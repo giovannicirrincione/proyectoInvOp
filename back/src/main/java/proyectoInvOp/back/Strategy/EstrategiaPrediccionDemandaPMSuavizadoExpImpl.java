@@ -61,7 +61,7 @@ public class EstrategiaPrediccionDemandaPMSuavizadoExpImpl implements   Estrateg
                 LocalDate añoActual = LocalDate.now();
                 int mes = añoActual.getMonthValue();
 
-                detallePrediccion.setMes(mes + i);
+                detallePrediccion.setMes(mes + i );
                 detallePrediccion.setValorPredecido(prediccionActual);
                 detallePrediccionList.add(detallePrediccion);
 

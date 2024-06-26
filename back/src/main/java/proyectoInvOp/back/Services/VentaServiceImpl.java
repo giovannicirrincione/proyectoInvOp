@@ -3,14 +3,10 @@ package proyectoInvOp.back.Services;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import proyectoInvOp.back.Entity.Articulo;
-import proyectoInvOp.back.Entity.DetalleVenta;
-import proyectoInvOp.back.Entity.Venta;
+import proyectoInvOp.back.Entity.*;
 import proyectoInvOp.back.PatronObservador.ArticuloObserver;
 import proyectoInvOp.back.PatronObservador.VentaObservable;
-import proyectoInvOp.back.Repositories.ArticuloRepository;
-import proyectoInvOp.back.Repositories.BaseRepository;
-import proyectoInvOp.back.Repositories.VentaRepository;
+import proyectoInvOp.back.Repositories.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,6 +26,12 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
     ArticuloRepository articuloRepository;
     @Autowired
     VentaRepository ventaRepository;
+    @Autowired
+    ArticuloDatoModeloArticuloRepository articuloDatoModeloArticuloRepository;
+    @Autowired
+    EstadoOrdenCompraRepository estadoOrdenCompraRepository;
+    @Autowired
+    OrdenCompraRepository ordenCompraRepository;
     @Override
     @Transactional
     public Venta save(Venta venta) throws Exception {
@@ -57,7 +59,10 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
                 }
             }
 
+
+
             if(bandera) {
+
                 Venta savedVenta = super.save(venta);
 
                 // Creo el observable y mando como parametro la Venta
@@ -70,6 +75,15 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
                 ventaObservable.notifyObservers();
 
 
+
+                //chequear si el articulo bajo de su PUNTO PEDIDO
+                List<DetalleVenta> detalleVenta = venta.getDetalleVentas();
+                for (DetalleVenta detallesVenta : detalleVenta) {
+                    Articulo articulo = detallesVenta.getArticulo();
+                    generacionOrdenCompra(articulo);
+                }
+
+
                 return savedVenta;
             }
 
@@ -78,6 +92,106 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
         }
             throw new Exception("No stock");
 
+
+    }
+
+    public void generacionOrdenCompra(Articulo articulo){
+
+        Long idArt = articulo.getId();
+
+        Optional<Articulo> articulo1 = articuloRepository.findActiveById(idArt);
+
+        Articulo articuloBD = articulo1.get();
+
+        int stockActual = articuloBD.getStockActual();
+
+
+        //Obtenemos el valor del PP
+        List<ArticuloDatoModeloArticulo> articuloDatoModeloArticulos = articuloDatoModeloArticuloRepository.findAllActive();
+
+        int puntoPedido = 0;
+        for (ArticuloDatoModeloArticulo  articulosDatoBD : articuloDatoModeloArticulos){
+            Articulo articulo2 = articulosDatoBD.getArticulo();
+            if (articulo2 == articuloBD){
+                DatoModeloArticulo  articuloDatoModeloArticulo = articulosDatoBD.getDatoModeloArticulo();
+                if("Punto pedido".equals(articuloDatoModeloArticulo.getNombreDato())){
+                    puntoPedido = articulosDatoBD.getValorDato();
+                    break;
+                }
+            }
+        }
+
+        //Obtenemos el valor del Lote Optimo
+
+        int loteOptimo = 0;
+        for (ArticuloDatoModeloArticulo  articulosDatoBD : articuloDatoModeloArticulos){
+            Articulo articulo2 = articulosDatoBD.getArticulo();
+            if (articulo2 == articuloBD){
+                DatoModeloArticulo  articuloDatoModeloArticulo = articulosDatoBD.getDatoModeloArticulo();
+                if("Lote optimo".equals(articuloDatoModeloArticulo.getNombreDato())){
+                    loteOptimo = articulosDatoBD.getValorDato();
+                    break;
+                }
+            }
+        }
+
+
+        //Si el PP es menor al stock Actual se genera la orden de compra (si esq ya no hay una pendiente)
+        if(puntoPedido>=stockActual) {
+
+            boolean bandera = true;
+
+            //CHEQUEAMOS QUE NO HAYA UNA ORDEN DE COMPRA PENDIENTE PARA ESE ARTICULO
+            List<OrdenCompra> ordenCompras = ordenCompraRepository.findAllActive();
+
+            for (OrdenCompra ordenes : ordenCompras) {
+                if (ordenes.getFechaLlegada() == null) {
+                    Articulo articulo2 = ordenes.getArticulo();
+                    Long idArtOrden = articulo2.getId();
+                    if (idArtOrden == idArt) {
+                        bandera = false;
+                        break;
+                    }
+                }
+            }
+             //GENERAMOS LA ORDEN COMPRA
+            if (bandera) {
+
+                OrdenCompra ordenCompra = new OrdenCompra();
+
+                ordenCompra.setCantidad(loteOptimo);
+                ordenCompra.setFechaCreacion(LocalDate.now());
+
+                Proveedor proveedor = articuloBD.getProveedorPredeterminado();
+
+                List<DemoraProveedorArticulo> demoraProveedorArticulos = proveedor.getDemoraProveedorArticulos();
+
+                float precioArt = 0;
+
+                for (DemoraProveedorArticulo demoras : demoraProveedorArticulos) {
+                    if (demoras.getArticulo() == articuloBD) {
+                        precioArt = demoras.getPrecioArt();
+                        break;
+                    }
+                }
+
+                float montoTotal = loteOptimo * precioArt;
+
+                ordenCompra.setMontoTotal(montoTotal);
+
+                EstadoOrdenCompra estadoOrdenCompra = estadoOrdenCompraRepository.findByNombre("Pendiente");
+
+                ordenCompra.setEstadoOrdenCompra(estadoOrdenCompra);
+
+                ordenCompra.setArticulo(articuloBD);
+
+                ordenCompra.setProveedor(articuloBD.getProveedorPredeterminado());
+
+                ordenCompraRepository.save(ordenCompra);
+            }
+
+
+        }
 
     }
     @Override
