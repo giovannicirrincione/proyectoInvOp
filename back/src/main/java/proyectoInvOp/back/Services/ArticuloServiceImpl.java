@@ -18,6 +18,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
     ModeloInventarioRepository modeloInventarioRepository;
     @Autowired
     OrdenCompraRepository ordenCompraRepository;
+    @Autowired
+    private DatoModeloArticuloRepository datoModeloArticuloRepository;
 
     public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository) {
         super(baseRepository);
@@ -93,6 +95,21 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
     @Override
     public DTOArticulo listarArticuloById(Long id) throws Exception {
         try {
+            return articuloRepository.findArticuloConValoresById(id);
+        }
+        catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<DTOArticulo> listarArticuloReponer() throws Exception {
+        try {
+
+            String nombreDato = "Lote Optimo";
+            datoModeloArticuloRepository.findDatoConNombre(String nombreDato =)
+
+
             return articuloRepository.findArticuloConValoresById(id);
         }
         catch (Exception e){

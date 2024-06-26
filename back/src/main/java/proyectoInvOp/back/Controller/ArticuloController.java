@@ -62,6 +62,14 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
             );
         }
     }
-
-
+    @GetMapping("/reponer")
+    public ResponseEntity<?> listarArticuloReponer(){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.listarArticuloReponer());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    "{\"error\":\"Error porfavor intente mas tarde. \"}"
+            );
+        }
+    }
 }

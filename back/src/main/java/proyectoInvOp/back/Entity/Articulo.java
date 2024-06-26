@@ -30,8 +30,6 @@ public class Articulo extends Base {
 
     private Integer demanda;
 
-    private Float desviacionEstandarDemanda;
-
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name = "modeloInventarioId")
     private ModeloInventario modeloInventario;
