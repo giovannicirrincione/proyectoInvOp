@@ -14,8 +14,10 @@ import proyectoInvOp.back.Strategy.EstrategiaPrediccionDemanda;
 import proyectoInvOp.back.Strategy.EstrategiaSimulacion;
 
 
+import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.Year;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -77,10 +79,6 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
         //obtenemos los parametros
         List<DTOParametroValor> listaParametros = obtenerParametros();
 
-        //for (DTOParametroValor par: listaParametros) {
-        //   System.out.println(par.getNombreParametro());
-        //}
-
         //Obtengo todos los metodos de prediccion
         List<MetodoPrediccion> metodosPrediccion = metodoPrediccionRepository.findAllActive();
 
@@ -93,6 +91,8 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
 
         String nombreMetodo = resultadoSimu.getNombreMetodo();
 
+        System.out.println(nombreMetodo);
+
         //obtengo la factory
         FactoryEstrategiaPrediccionDemanda factoryEstrategiaPrediccionDemanda = FactoryEstrategiaPrediccionDemanda.getInstancia();
 
@@ -101,6 +101,26 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
 
         //uso la estrategia para predecir la DEMANDA FUTURA
         PrediccionDemanda prediccionDemanda = estrategiaPrediccionDemanda.predecirDemanda(ventasHistoricas,cantPeriodos,resultadoSimu);
+
+        //Setiamos el articulo
+        prediccionDemanda.setArticulo(articulo);
+        //Setiamos el metodo usado de prediccion
+        List<MetodoPrediccion> metodos = metodoPrediccionRepository.findAllActive();
+
+        MetodoPrediccion metodoPrediccionSeleccionado = null;
+        for(MetodoPrediccion metodoPrediccion : metodos) {
+            if (nombreMetodo.equals(metodoPrediccion.getNombre())) {
+                metodoPrediccionSeleccionado = metodoPrediccion;
+                break;
+            }
+        }
+
+
+        prediccionDemanda.setMetodoPrediccion(metodoPrediccionSeleccionado);
+
+        prediccionDemanda.setFechaDesde(LocalDate.now());
+
+        prediccionDemandaRepository.save(prediccionDemanda);
 
         return prediccionDemanda;
 
@@ -116,14 +136,14 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
 
         List<Venta> ventas = ventaRepository.findAllActive();
 
-        Map<Month, Integer> ventasPorMes = new HashMap<>();
+        Map<LocalDate, Integer> ventasPorMes = new HashMap<>();
 
         for (Venta venta : ventas) {
             if (venta.getFechaVenta().isAfter(fechaInicio) && venta.getFechaVenta().isBefore(fechaFin.plusDays(1))) {
                 for (DetalleVenta detalle : venta.getDetalleVentas()) {
                     if (detalle.getArticulo().getId().equals(id)) {
-                        Month mes = venta.getFechaVenta().getMonth();
-                        ventasPorMes.put(mes, ventasPorMes.getOrDefault(mes, 0) + detalle.getCantidad());
+                        LocalDate fecha = venta.getFechaVenta();
+                        ventasPorMes.put(fecha, ventasPorMes.getOrDefault(fecha, 0) + detalle.getCantidad());
                     }
                 }
             }
@@ -131,12 +151,12 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
 
 
         List<DTOVentas> resultado = new ArrayList<>();
-        for (Map.Entry<Month, Integer> entry : ventasPorMes.entrySet()) {
-            resultado.add(new DTOVentas(entry.getKey().getValue(), entry.getValue()));
+        for (Map.Entry<LocalDate, Integer> entry : ventasPorMes.entrySet()) {
+            resultado.add(new DTOVentas(entry.getKey(), entry.getValue()));
         }
 
         for (DTOVentas v: resultado) {
-            System.out.println(v.getMes()+" "+v.getCantidadVentas());
+            System.out.println(v.getFecha()+" "+v.getCantidadVentas());
         }
 
         return resultado;
@@ -176,11 +196,17 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             EstrategiaSimulacion estrategiaSimulacion = factorySimulacionSeleccionParametros.obtenerEstrategiaSimulacion(metodoPrediccion);
             //simulo
             DTOResultadoSimu resultadoSimu = estrategiaSimulacion.simular(ventas,parametros);
+
             //agrego el resultado a la lista
             resultadoSimusList.add(resultadoSimu);
         }
 
+        for (DTOResultadoSimu RESULTS : resultadoSimusList){
+           System.out.println(RESULTS.getNombreMetodo()+ "   " + RESULTS.getErrorObtenido());
+        }
+
         DTOResultadoSimu resultadoMenorError = obtenerMenorError(resultadoSimusList);
+
 
         return resultadoMenorError;
 

@@ -7,17 +7,15 @@ import proyectoInvOp.back.Entity.ParametroGeneral;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EstrategiaSimulacionPMSuavizadoExp implements EstrategiaSimulacion {
     @Override
     public DTOResultadoSimu simular(List<DTOVentas> ventas, List<DTOParametroValor> parametros) {
 
-        System.out.println("               ");
-        System.out.println("******SIMULACION PM SUAVIZADO*********");
-        for (DTOParametroValor par:parametros){
-            System.out.println("nombre parametro: "+par.getNombreParametro()+", valor parametro: "+par.getValorParametro());
-        }
 
         float mesesAtras = 0;
         List<Float> alfas = new ArrayList<>();
@@ -33,23 +31,29 @@ public class EstrategiaSimulacionPMSuavizadoExp implements EstrategiaSimulacion 
 
         LocalDate fechaActual = LocalDate.now();
 
-        System.out.println(fechaActual);
 
-
+        // Filtrar y ordenar las ventas de los últimos 12 meses
+        List<DTOVentas> ventasUltimos12Meses = ventas.stream()
+                .filter(venta -> venta.getFecha().isAfter(fechaActual.minusMonths(12)))
+                .sorted(Comparator.comparing(DTOVentas::getFecha))
+                .collect(Collectors.toList());
 
         List<Float> errores = new ArrayList<>();
 
+
         float demandaReal = 0;
         for (Float alfa: alfas){
-            LocalDate fechaDesde = fechaActual.minusMonths((long)mesesAtras);
+            LocalDate fechaDesde = fechaActual.minusMonths((long)12);
+
             float pronostico = 0;
             boolean primerValor = true;
             float sumaErrores = 0;
             while (!fechaDesde.isAfter(fechaActual)) {
-                System.out.println("Procesando mes: " + fechaDesde.getMonth() + " del año " + fechaDesde.getYear());
 
-                for (DTOVentas venta : ventas) {
-                    if (venta.getMes() == fechaDesde.getMonthValue()) {
+
+                for (DTOVentas venta : ventasUltimos12Meses) {
+                    if (venta.getFecha().getMonthValue() == fechaDesde.getMonthValue()) {
+
 
 
                         if (primerValor) {
@@ -64,9 +68,7 @@ public class EstrategiaSimulacionPMSuavizadoExp implements EstrategiaSimulacion 
                         }
 
                         demandaReal = venta.getCantidadVentas();
-                        System.out.println("Demanda real en mes " + fechaDesde.getMonth() + ": " + demandaReal);
 
-                        System.out.println("Pronóstico: " + pronostico);
 
                     }
                 }
@@ -76,29 +78,28 @@ public class EstrategiaSimulacionPMSuavizadoExp implements EstrategiaSimulacion 
 
         }
 
-        for (Float err: errores){
-            System.out.println(err);
-        }
+
 
         Float errMin = Collections.min(errores);
-        System.out.println("error minimo:"+errMin);
+
         int indexMin = errores.indexOf(errMin);
-        System.out.println("indice: "+indexMin);
+
 
         float alfaConMenosError = alfas.get(indexMin);
-        System.out.println(alfaConMenosError);
+
 
         DTOResultadoSimu resultadoSimu = new DTOResultadoSimu();
-        resultadoSimu.setErrorObtenido(errMin);
-        resultadoSimu.setNombreMetodo("PM Suavizado");
+        resultadoSimu.setErrorObtenido((double)errMin);
+        resultadoSimu.setNombreMetodo("PMSuavizadoExp");
         resultadoSimu.setParametroUsado("alfa");
         resultadoSimu.setValorParametro(alfaConMenosError);
 
-        System.out.println("**************************************");
-        System.out.println("               ");
+
+
+        System.out.println("******************");
+        System.out.println("simule con SUAVIZADO");
+        System.out.println("obtuve" + resultadoSimu.getErrorObtenido());
+        System.out.println("******************");
         return resultadoSimu;
     }
-
-
-
 }

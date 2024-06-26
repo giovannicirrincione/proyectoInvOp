@@ -24,13 +24,13 @@ public class FactorySimulacionSeleccionParametros {
 
         switch (nombrePredicion){
 
-            case "PM Suavizado":
+            case "PMSuavizadoExp":
                 EstrategiaSimulacion estrategiaSimulacion = new EstrategiaSimulacionPMSuavizadoExp();
                 return estrategiaSimulacion;
-            case "Promedio Movil Ponderado":
+            case "PromMovilPonderado":
                 EstrategiaSimulacion estrategiaSimulacion1 = new EstrategiaSimulacionPromMovilPonderado();
                 return estrategiaSimulacion1;
-            case "Regresion Lineal":
+            case "RegresionLineal":
                 EstrategiaSimulacion estrategiaSimulacion2 = new EstrategiaSimulacionRegresionLineal();
                 return estrategiaSimulacion2;
             case "Estacionalidad":

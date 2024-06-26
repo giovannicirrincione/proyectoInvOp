@@ -14,8 +14,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class DemoraProveedorArticulo extends Base{
 
-
+    private float costoPedido;
     private float tiempoDemora;
+    private float precioArt;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn (name = "articuloId")

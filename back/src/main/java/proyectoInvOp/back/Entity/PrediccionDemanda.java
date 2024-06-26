@@ -37,12 +37,8 @@ public class PrediccionDemanda extends  Base{
     @JoinColumn(name = "metodoPrediccionId")
     private MetodoPrediccion metodoPrediccion;
 
-    public PrediccionDemanda(List<Double> predicciones) {
-        this.predicciones = predicciones;
-    }
-
-    public List<Double> getPredicciones() {
-        return predicciones;
-    }
+    @NotNull
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<DetallePrediccion> detallePrediccions;
 
 }

@@ -1,65 +1,86 @@
 package proyectoInvOp.back.Strategy;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import proyectoInvOp.back.DTOS.DTOResultadoSimu;
 import proyectoInvOp.back.DTOS.DTOVentas;
+import proyectoInvOp.back.Entity.DetallePrediccion;
+import proyectoInvOp.back.Entity.ParametroEspecifico;
 import proyectoInvOp.back.Entity.PrediccionDemanda;
+import proyectoInvOp.back.Repositories.ParametrosEspecificosRepository;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class EstrategiaPrediccionDemandaPromMovilPonderadoImpl implements EstrategiaPrediccionDemanda{
-    private int periodosMoviles;
-    private double[] pesos;
-
-    public EstrategiaPrediccionDemandaPromMovilPonderadoImpl() {
-        // Valores predeterminados
-        this.periodosMoviles = 3;
-        this.pesos = new double[]{0.6, 0.3, 0.1};
-    }
-
-    public void setPeriodosMoviles(int periodosMoviles) {
-        this.periodosMoviles = periodosMoviles;
-        this.pesos = new double[periodosMoviles];
-        double pesoTotal = 0;
-        for (int i = 0; i < periodosMoviles; i++) {
-            this.pesos[i] = 1.0 / (i + 1);
-            pesoTotal += this.pesos[i];
-        }
-        for (int i = 0; i < periodosMoviles; i++) {
-            this.pesos[i] /= pesoTotal;
-        }
-    }
-
-    public void setPesos(double[] pesos) {
-        if (pesos.length != this.periodosMoviles) {
-            throw new IllegalArgumentException("La cantidad de pesos debe coincidir con la cantidad de periodos móviles.");
-        }
-        this.pesos = pesos;
-    }
+    @Autowired
+    ParametrosEspecificosRepository parametrosEspecificosRepository;
 
     @Override
     public PrediccionDemanda predecirDemanda(List<DTOVentas> ventas, int cantPeriodos, DTOResultadoSimu resultadoSimu) {
-        List<Double> predicciones = new ArrayList<>();
 
-        if (ventas.size() < periodosMoviles) {
-            throw new IllegalArgumentException("No hay suficientes datos para calcular el promedio móvil ponderado.");
+
+        //ordeno la lista de mas viejo a mas nuevos
+        ventas.sort(Comparator.comparing(DTOVentas::getFecha));
+
+        //Dejamos solo las ventas de los ultimos 12 meses
+        List<DTOVentas> ventasUltimos12Meses = ventas.stream()
+                .filter(venta -> venta.getFecha().isAfter(LocalDate.now().minusMonths(12)))
+                .sorted(Comparator.comparing(DTOVentas::getFecha))
+                .collect(Collectors.toList());
+
+        //almacenamos la predicciones
+        List<Integer> predicciones = new ArrayList<>();
+
+        //obtenemos los parametros usados en la simulacion
+        List<Float> valoresPesoMensual = resultadoSimu.getValoresParametros();
+
+        //oredenamos los pesos
+        Collections.sort(valoresPesoMensual);
+
+        //guardamos las predicciones
+        List<Integer> valoresAuxiliares = new ArrayList<>();
+
+        //Llenamos el valoresAuxiliales con las catidad vendidas
+        for (DTOVentas ventas1 : ventasUltimos12Meses){
+            Integer valor = ventas1.getCantidadVentas();
+            valoresAuxiliares.add(valor);
         }
 
-        // Calcular el promedio móvil ponderado para los datos históricos
-        for (int i = periodosMoviles - 1; i < ventas.size(); i++) {
-            double sumaPonderada = 0.0;
-            for (int j = 0; j < periodosMoviles; j++) {
-                sumaPonderada += ventas.get(i - j).getCantidadVentas() * pesos[j];
+        //Calculo las predicciones
+        for (int i = 0; i < cantPeriodos; i++){
+            Float valorPredecido = 0.0f;
+
+            for (int j = 0; j<valoresAuxiliares.size();j++){
+
+
+                valorPredecido = valorPredecido + valoresAuxiliares.get(j) * valoresPesoMensual.get(j);
+
             }
-            predicciones.add(sumaPonderada);
+            valoresAuxiliares.remove(0);
+            valoresAuxiliares.add(valorPredecido.intValue());
+            predicciones.add(valorPredecido.intValue());
+
         }
 
-        // Generar predicciones para los periodos futuros utilizando el último valor calculado
-        double ultimaPrediccion = predicciones.get(predicciones.size() - 1);
-        for (int i = 0; i < cantPeriodos; i++) {
-            predicciones.add(ultimaPrediccion);
-        }
 
-        return new PrediccionDemanda(predicciones);
+        List<DetallePrediccion> detallePrediccionList = new ArrayList<>();
+
+        PrediccionDemanda prediccionDemanda = new PrediccionDemanda();
+
+        int mes = LocalDate.now().getMonthValue();
+
+
+        for (int i=0; i<predicciones.size(); i++){
+            DetallePrediccion detallePrediccion = new DetallePrediccion();
+            Integer valorPred = predicciones.get(i);
+            detallePrediccion.setValorPredecido(Double.valueOf(valorPred));
+            detallePrediccion.setMes(mes + i);
+            detallePrediccionList.add(detallePrediccion);
+        }
+        prediccionDemanda.setDetallePrediccions(detallePrediccionList);
+
+        return prediccionDemanda;
     }
 }
