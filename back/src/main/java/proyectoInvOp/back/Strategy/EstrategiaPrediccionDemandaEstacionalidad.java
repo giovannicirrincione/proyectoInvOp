@@ -45,7 +45,7 @@ public class EstrategiaPrediccionDemandaEstacionalidad implements EstrategiaPred
 
         for (int i = 0; i < indiceMensual.length; i++){
 
-            indiceMensual[i] = (ventaMensual[i]/3)/ promGeneral;
+            indiceMensual[i] = (ventaMensual[i]/3.0)/ promGeneral;
 
         }
 
