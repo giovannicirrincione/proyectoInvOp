@@ -73,7 +73,8 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
                 ordenCompra.setProveedor(proveedorPredeterminado);
 
                 ordenCompra.setMontoTotal(ordenCompra.getCantidad()*precioArt);
-
+                System.out.println(precioArt);
+                System.out.println(ordenCompra.getMontoTotal());
                 EstadoOrdenCompra estadoOrdenCompra = estadoOrdenCompraRepository.findByNombre("Pendiente");
 
                 ordenCompra.setEstadoOrdenCompra(estadoOrdenCompra);

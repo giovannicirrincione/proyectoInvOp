@@ -1,4 +1,4 @@
-package proyectoInvOp.back.Entity.Controller;
+package proyectoInvOp.back.Controller;
 
 
 import org.springframework.web.bind.annotation.CrossOrigin;
