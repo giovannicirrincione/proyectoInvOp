@@ -237,7 +237,10 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
                 }
             }
 
-            return (p*d + ca*q/2 + cp*d/q);
+            float cgi = p*d + ca*q/2 + cp*d/q;
+
+            articuloEcontrado.setCGI(cgi);
+            return (cgi);
 
         } catch (Exception e) {
             throw new Exception(e.getMessage());
