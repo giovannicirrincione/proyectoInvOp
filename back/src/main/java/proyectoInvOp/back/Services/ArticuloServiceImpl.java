@@ -203,4 +203,44 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
             throw new Exception(e.getMessage());
         }
     }
+
+    @Override
+    public float calcularCGI(long id) throws Exception{
+        try {
+            Optional<Articulo> articulo = articuloRepository.findActiveById(id);
+
+            Articulo articuloEcontrado = articulo.get();
+
+            List<DemoraProveedorArticulo> proveedorArticulos = articuloEcontrado.getProveedorPredeterminado().getDemoraProveedorArticulos();
+
+            float cp = 0;
+
+            float p = 0;
+
+            for (DemoraProveedorArticulo proveedorArticulo : proveedorArticulos) {
+                if (proveedorArticulo.getArticulo().getId().equals(id)){
+                    cp = proveedorArticulo.getCostoPedido();
+                    p = proveedorArticulo.getPrecioArt();
+                }
+            }
+
+            int d = articuloEcontrado.getDemanda();
+
+            float ca = articuloEcontrado.getCostoAlmacenamiento();
+
+            List<ArticuloDatoModeloArticulo> articulosDatoModeloArticulo = articuloDatoModeloArticuloRepository.findArticulosDatoModeloArticuloPorArticulo(id);
+
+            int q = 0;
+            for (ArticuloDatoModeloArticulo articuloDatoModeloArticulo: articulosDatoModeloArticulo){
+                if(articuloDatoModeloArticulo.getDatoModeloArticulo().getNombreDato().equals("Lote Optimo")){
+                    q = articuloDatoModeloArticulo.getValorDato();
+                }
+            }
+
+            return (p*d + ca*q/2 + cp*d/q);
+
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
 }

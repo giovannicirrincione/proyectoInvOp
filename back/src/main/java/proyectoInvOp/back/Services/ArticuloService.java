@@ -16,4 +16,6 @@ public interface ArticuloService extends BaseService<Articulo,Long> {
 
     List<DTOArticulo> listarArticuloReponer() throws Exception;
 
+    float calcularCGI(long id) throws Exception;
+
 }
