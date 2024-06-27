@@ -1,15 +1,10 @@
-package proyectoInvOp.back.Controller;
+package proyectoInvOp.back.Entity.Controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import proyectoInvOp.back.Entity.Articulo;
-import proyectoInvOp.back.Entity.EstadoOrdenCompra;
 import proyectoInvOp.back.Entity.OrdenCompra;
-import proyectoInvOp.back.Services.ArticuloServiceImpl;
 import proyectoInvOp.back.Services.OrdenCompraServiceImpl;
-
-import java.util.OptionalDouble;
 
 @RestController
 @CrossOrigin(origins = "*")

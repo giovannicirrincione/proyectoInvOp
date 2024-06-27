@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import proyectoInvOp.back.DTOS.DTOArticulo;
 import proyectoInvOp.back.Entity.*;
 import proyectoInvOp.back.Repositories.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +20,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
     ModeloInventarioRepository modeloInventarioRepository;
     @Autowired
     OrdenCompraRepository ordenCompraRepository;
+    @Autowired
+    ArticuloDatoModeloArticuloRepository articuloDatoModeloArticuloRepository;
 
     public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository) {
         super(baseRepository);
@@ -46,8 +50,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
             articuloRepository.save(articulo);
 
             return articulo;
-        }catch (Exception e){
-            throw  new Exception(e.getMessage());
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
         }
     }
 
@@ -80,12 +84,12 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
             throw new Exception(e.getMessage());
         }
     }
+
     @Override
     public List<DTOArticulo> listarArticulos() throws Exception {
         try {
             return articuloRepository.findArticulosConValores();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
@@ -94,9 +98,57 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
     public DTOArticulo listarArticuloById(Long id) throws Exception {
         try {
             return articuloRepository.findArticuloConValoresById(id);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
+    }
+
+    @Override
+    public List<DTOArticulo> listarArticulosFaltantes() throws Exception {
+
+        List<DTOArticulo> listaArticulosFaltantes = new ArrayList<>();
+
+        //Me traigo todos los datos
+        List<ArticuloDatoModeloArticulo> articuloDatoModeloArticulos = articuloDatoModeloArticuloRepository.findAllActive();
+        //Por cada dato chequeo si el stock SEGURIDAD esta por encima del stock acutual del articulo
+        for (ArticuloDatoModeloArticulo articuloDatoModeloArticulo : articuloDatoModeloArticulos) {
+
+            Articulo articulo = articuloDatoModeloArticulo.getArticulo();
+
+            int stockActual = articulo.getStockActual();
+
+            DatoModeloArticulo datoModeloArticulo1 = articuloDatoModeloArticulo.getDatoModeloArticulo();
+
+            if ("Stock seguridad".equals(datoModeloArticulo1.getNombreDato())) {
+                //Chekeo q el stock de seguridad este por debajo del stockActual
+                if (stockActual <= articuloDatoModeloArticulo.getValorDato()) {
+
+                    DTOArticulo articuloFaltante = new DTOArticulo();
+
+                    Long idArt = articuloDatoModeloArticulo.getArticulo().getId();
+
+                    articuloFaltante.setId(idArt);
+
+                    String nombreArticulo = articuloDatoModeloArticulo.getArticulo().getNombre();
+
+                    articuloFaltante.setNombre(nombreArticulo);
+
+                    int stockActualArticulo = articuloDatoModeloArticulo.getArticulo().getStockActual();
+
+                    articuloFaltante.setStockActual(stockActualArticulo);
+
+                    int valorLoteOptimo = articuloDatoModeloArticulo.getValorDato();
+
+                    articuloFaltante.setValorLoteOptimo(valorLoteOptimo);
+
+                    listaArticulosFaltantes.add(articuloFaltante);
+
+
+                }
+
+            }
+
+        }
+        return listaArticulosFaltantes;
     }
 }

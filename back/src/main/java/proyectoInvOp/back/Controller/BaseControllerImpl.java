@@ -1,4 +1,4 @@
-package proyectoInvOp.back.Controller;
+package proyectoInvOp.back.Entity.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

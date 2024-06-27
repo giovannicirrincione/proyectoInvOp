@@ -12,4 +12,6 @@ public interface ArticuloService extends BaseService<Articulo,Long> {
 
     DTOArticulo listarArticuloById(Long id) throws Exception;
 
+    List<DTOArticulo> listarArticulosFaltantes() throws Exception;
+
 }

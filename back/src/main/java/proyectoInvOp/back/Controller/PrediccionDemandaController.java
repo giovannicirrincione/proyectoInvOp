@@ -1,10 +1,8 @@
-package proyectoInvOp.back.Controller;
+package proyectoInvOp.back.Entity.Controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import proyectoInvOp.back.Entity.Articulo;
-import proyectoInvOp.back.Entity.OrdenCompra;
 import proyectoInvOp.back.Entity.PrediccionDemanda;
 import proyectoInvOp.back.Exeptions.PrediccionesFoundException;
 import proyectoInvOp.back.Services.PrediccionDemandaServiceImpl;
