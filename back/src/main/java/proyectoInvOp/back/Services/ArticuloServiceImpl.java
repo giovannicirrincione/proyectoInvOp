@@ -145,6 +145,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
 
                     listaArticulosFaltantes.add(articuloFaltante);
 
+                    articuloFaltante.setStockSeguridad(articuloDatoModeloArticulo.getValorDato());
+
 
                 }
 
