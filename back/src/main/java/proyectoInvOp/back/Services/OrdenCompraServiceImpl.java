@@ -32,6 +32,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
     @Override
     public OrdenCompra save(OrdenCompra ordenCompra) throws Exception {
         try{
+            System.out.println("entre al save");
             boolean bandera = true;
 
             List<OrdenCompra> ordenCompraList = ordenCompraRepository.findAllByArticuloId(ordenCompra.getArticulo().getId());

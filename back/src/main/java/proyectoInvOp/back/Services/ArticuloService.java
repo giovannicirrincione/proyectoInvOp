@@ -14,4 +14,6 @@ public interface ArticuloService extends BaseService<Articulo,Long> {
 
     List<DTOArticulo> listarArticulosFaltantes() throws Exception;
 
+    List<DTOArticulo> listarArticuloReponer() throws Exception;
+
 }
