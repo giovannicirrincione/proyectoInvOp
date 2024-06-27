@@ -32,6 +32,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
     @Override
     public OrdenCompra save(OrdenCompra ordenCompra) throws Exception {
         try{
+            System.out.println("entre al save");
             boolean bandera = true;
 
             List<OrdenCompra> ordenCompraList = ordenCompraRepository.findAllByArticuloId(ordenCompra.getArticulo().getId());
@@ -73,9 +74,9 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
                 ordenCompra.setProveedor(proveedorPredeterminado);
 
                 ordenCompra.setMontoTotal(ordenCompra.getCantidad()*precioArt);
-                System.out.println(precioArt);
-                System.out.println(ordenCompra.getMontoTotal());
+
                 EstadoOrdenCompra estadoOrdenCompra = estadoOrdenCompraRepository.findByNombre("Pendiente");
+
 
                 ordenCompra.setEstadoOrdenCompra(estadoOrdenCompra);
 

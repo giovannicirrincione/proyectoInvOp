@@ -13,6 +13,7 @@ import java.util.List;
 public class EstrategiaPrediccionDemandaEstacionalidad implements EstrategiaPrediccionDemanda{
     @Override
     public PrediccionDemanda predecirDemanda(List<DTOVentas> ventas, int cantPeriodos, DTOResultadoSimu resultadoSimu) {
+
         List<Double> predicciones = new ArrayList<>();
 
         double promGeneral = 0;
@@ -45,7 +46,9 @@ public class EstrategiaPrediccionDemandaEstacionalidad implements EstrategiaPred
 
         for (int i = 0; i < indiceMensual.length; i++){
 
-            indiceMensual[i] = (ventaMensual[i]/3)/ promGeneral;
+            indiceMensual[i] = (ventaMensual[i]/3.0)/ promGeneral;
+
+
 
         }
 
@@ -53,18 +56,29 @@ public class EstrategiaPrediccionDemandaEstacionalidad implements EstrategiaPred
         List<DetallePrediccion> detallePrediccionList = new ArrayList<>();
 
         PrediccionDemanda prediccionDemanda = new PrediccionDemanda();
+        //Mes actual acomodado a la lista
+        int mes = LocalDate.now().getMonthValue() - 1;
 
-        int mes = LocalDate.now().getMonthValue();
+        double demanda = 0;
+        int mesFuturo = 0;
 
-        // Generar predicciones
+
         for (int i = 0; i < cantPeriodos; i++) {
             DetallePrediccion detallePrediccion = new DetallePrediccion();
-            int mesFuturo = mes + i;
-            double demanda = (indiceMensual[mesFuturo]*promGeneral);
+
+            // Calcula el mes futuro con manejo de desbordamiento usando el operador módulo
+            mesFuturo = (mes + i) % 12;
+
+            // Calcula la demanda para el mes futuro
+            demanda = indiceMensual[mesFuturo] * promGeneral;
+
+            // Aquí puedes agregar la lógica para usar 'detallePrediccion'
             detallePrediccion.setValorPredecido(demanda);
-            detallePrediccion.setMes(mesFuturo);
+            detallePrediccion.setMes(mesFuturo + 1);
             detallePrediccionList.add(detallePrediccion);
         }
+
+
         prediccionDemanda.setDetallePrediccions(detallePrediccionList);
 
         return prediccionDemanda;

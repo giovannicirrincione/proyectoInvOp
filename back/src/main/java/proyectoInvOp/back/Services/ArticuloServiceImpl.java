@@ -22,6 +22,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
     OrdenCompraRepository ordenCompraRepository;
     @Autowired
     ArticuloDatoModeloArticuloRepository articuloDatoModeloArticuloRepository;
+    @Autowired
+    DatoModeloArticuloRepository datoModeloArticuloRepository;
 
     public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository) {
         super(baseRepository);
@@ -150,5 +152,55 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
 
         }
         return listaArticulosFaltantes;
+    }
+    @Override
+    public List<DTOArticulo> listarArticuloReponer() throws Exception {
+        try {
+
+            List<DTOArticulo> articulosAPedir = new ArrayList<DTOArticulo>();
+
+            String nombreDato = "Punto pedido";
+
+            DatoModeloArticulo puntoPedido = datoModeloArticuloRepository.findDatoModeloArticuloConNombre(nombreDato);
+
+            Long idDato = puntoPedido.getId();
+
+            List<ArticuloDatoModeloArticulo> articulosDatoModeloArticulo = articuloDatoModeloArticuloRepository.findArticulosDatoModeloArticulo(idDato);
+
+
+            for(ArticuloDatoModeloArticulo articuloDatoModeloArticulo : articulosDatoModeloArticulo){
+
+                Articulo articulo = articuloDatoModeloArticulo.getArticulo();
+
+                List<OrdenCompra> ordenesCompras = ordenCompraRepository.findAllByArticuloId(articulo.getId());
+
+                Boolean sinOrdenes = true;
+
+                for (OrdenCompra ordenCompra : ordenesCompras) {
+                    EstadoOrdenCompra estadoOrdenCompra = ordenCompra.getEstadoOrdenCompra();
+                    if(estadoOrdenCompra.getNombre().equals("Pendiente")){
+                        sinOrdenes = false;
+                    }
+
+                }
+
+
+                if(articulo.getStockActual() <= articuloDatoModeloArticulo.getValorDato() && sinOrdenes){
+
+                    DTOArticulo articuloAPedir = new DTOArticulo();
+
+                    articuloAPedir.setId(articulo.getId());
+                    articuloAPedir.setNombre(articulo.getNombre());
+                    articuloAPedir.setStockActual(articulo.getStockActual());
+                    articuloAPedir.setValorPuntoPedido(articuloDatoModeloArticulo.getValorDato());
+                    articulosAPedir.add(articuloAPedir);
+
+                }
+            }
+            return articulosAPedir;
+        }
+        catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
     }
 }

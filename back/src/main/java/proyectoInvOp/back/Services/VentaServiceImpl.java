@@ -7,6 +7,7 @@ import proyectoInvOp.back.Entity.*;
 import proyectoInvOp.back.PatronObservador.ArticuloObserver;
 import proyectoInvOp.back.PatronObservador.VentaObservable;
 import proyectoInvOp.back.Repositories.*;
+import proyectoInvOp.back.ServiceEmail.GmailService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -32,6 +33,8 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
     EstadoOrdenCompraRepository estadoOrdenCompraRepository;
     @Autowired
     OrdenCompraRepository ordenCompraRepository;
+    @Autowired
+    GmailService gmailService;
     @Override
     @Transactional
     public Venta save(Venta venta) throws Exception {
@@ -99,7 +102,7 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
 
     }
 
-    public void generacionOrdenCompra(Articulo articulo){
+    public void generacionOrdenCompra(Articulo articulo) throws Exception {
 
         Long idArt = articulo.getId();
 
@@ -192,6 +195,8 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
                 ordenCompra.setProveedor(articuloBD.getProveedorPredeterminado());
 
                 ordenCompraRepository.save(ordenCompra);
+                //Metodo que notifica al gerente de Operaiones la generacion de un orden compra aut
+                gmailService.mandarEmail(ordenCompra);
             }
 
 
