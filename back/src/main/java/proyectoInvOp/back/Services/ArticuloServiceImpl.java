@@ -108,7 +108,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
 
         List<DTOArticulo> listaArticulosFaltantes = new ArrayList<>();
 
-        //Me traingo todos los datos
+        //Me traigo todos los datos
         List<ArticuloDatoModeloArticulo> articuloDatoModeloArticulos = articuloDatoModeloArticuloRepository.findAllActive();
         //Por cada dato chequeo si el stock SEGURIDAD esta por encima del stock acutual del articulo
         for (ArticuloDatoModeloArticulo articuloDatoModeloArticulo : articuloDatoModeloArticulos) {
@@ -145,7 +145,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
 
 
                 }
-
 
             }
 

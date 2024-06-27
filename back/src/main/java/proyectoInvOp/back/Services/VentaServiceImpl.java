@@ -63,6 +63,10 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
 
             if(bandera) {
 
+                float montoTotal = calcularMontoTotal(venta);
+
+                venta.setMontoTotal(montoTotal);
+
                 Venta savedVenta = super.save(venta);
 
                 // Creo el observable y mando como parametro la Venta
@@ -193,6 +197,29 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
 
         }
 
+    }
+    public float calcularMontoTotal(Venta venta){
+
+        float total = 0;
+
+        List<DetalleVenta> detalleVentas = venta.getDetalleVentas();
+
+        for (DetalleVenta detalles : detalleVentas){
+            int cantidadVendida = detalles.getCantidad();
+
+            Long idArt = detalles.getArticulo().getId();
+
+            Optional<Articulo> articulo = articuloRepository.findActiveById(idArt);
+
+            Articulo articuloBD = articulo.get();
+
+            float precioArt = articuloBD.getPrecioVenta();
+
+            detalles.setSubTotal(precioArt*cantidadVendida);
+
+            total = total + (precioArt*cantidadVendida);
+        }
+        return total;
     }
     @Override
     public int demandaHistorica(Long id, LocalDate fechaDesde, LocalDate fechaHasta) throws Exception {

@@ -30,6 +30,8 @@ public class Articulo extends Base {
 
     private Integer CGI;
 
+    private float precioVenta;
+
 
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name = "modeloInventarioId")

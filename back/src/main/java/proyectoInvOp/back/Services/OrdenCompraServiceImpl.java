@@ -4,10 +4,7 @@ package proyectoInvOp.back.Services;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import proyectoInvOp.back.Entity.Articulo;
-import proyectoInvOp.back.Entity.EstadoOrdenCompra;
-import proyectoInvOp.back.Entity.OrdenCompra;
-import proyectoInvOp.back.Entity.Proveedor;
+import proyectoInvOp.back.Entity.*;
 import proyectoInvOp.back.PatronObservador.ArticuloObserver;
 import proyectoInvOp.back.PatronObservador.OrdenCompraObservable;
 import proyectoInvOp.back.Repositories.BaseRepository;
@@ -38,7 +35,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
             boolean bandera = true;
 
             List<OrdenCompra> ordenCompraList = ordenCompraRepository.findAllByArticuloId(ordenCompra.getArticulo().getId());
-            //check de otra orden de comora activa para el articulo
+            //check de otra orden de compra activa para el articulo
             for (OrdenCompra ordenCompra1 : ordenCompraList){
                 EstadoOrdenCompra estadoOrdenCompra = ordenCompra.getEstadoOrdenCompra();
                 String estadoActual = estadoOrdenCompra.getNombre();
@@ -54,7 +51,28 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
 
                 Proveedor proveedorPredeterminado = articulo.getProveedorPredeterminado();
 
+                //Busco el precio del articulo con ese proveedor
+
+                float precioArt = 0;
+
+                List<DemoraProveedorArticulo> demoraProveedorArticulos = proveedorPredeterminado.getDemoraProveedorArticulos();
+
+                for (DemoraProveedorArticulo demoraProveedorArticulo : demoraProveedorArticulos){
+
+                    Articulo articulo1 = demoraProveedorArticulo.getArticulo();
+
+                    if (articulo1.getId() == articulo.getId()){
+                        precioArt = demoraProveedorArticulo.getPrecioArt();
+                        break;
+
+                    }
+
+
+                }
+
                 ordenCompra.setProveedor(proveedorPredeterminado);
+
+                ordenCompra.setMontoTotal(ordenCompra.getCantidad()*precioArt);
 
                 EstadoOrdenCompra estadoOrdenCompra = estadoOrdenCompraRepository.findByNombre("Pendiente");
 
