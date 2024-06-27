@@ -1,13 +1,10 @@
-package proyectoInvOp.back.Controller;
+package proyectoInvOp.back.Entity.Controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import proyectoInvOp.back.Entity.Articulo;
 import proyectoInvOp.back.Services.ArticuloServiceImpl;
-
-import java.time.LocalDate;
-import java.util.Date;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -56,6 +53,17 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
     public ResponseEntity<?> listarArticulos(@PathVariable Long id) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(servicio.listarArticuloById(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    "{\"error\":\"Error porfavor intente mas tarde. \"}"
+            );
+        }
+    }
+
+    @GetMapping("getFaltantes")
+    public ResponseEntity<?> listarArticulosFaltantes() {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.listarArticulosFaltantes());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     "{\"error\":\"Error porfavor intente mas tarde. \"}"

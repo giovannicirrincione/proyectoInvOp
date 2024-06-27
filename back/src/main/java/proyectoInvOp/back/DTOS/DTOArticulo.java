@@ -1,11 +1,26 @@
 package proyectoInvOp.back.DTOS;
 
-public interface DTOArticulo {
-    Long getId();
-    String getNombre();
-    int getStockActual();
-    int getValorLoteOptimo();
-    int getValorPuntoPedido();
-    int getStockSeguridad();
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class DTOArticulo {
+
+    private Long Id;
+
+    private String nombre;
+
+    private int stockActual;
+
+    private int valorLoteOptimo;
+
+    private int valorPuntoPedido;
+
+    private int stockSeguridad;
 
 }

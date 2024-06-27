@@ -1,4 +1,4 @@
-package proyectoInvOp.back.Controller;
+package proyectoInvOp.back.Entity.Controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
