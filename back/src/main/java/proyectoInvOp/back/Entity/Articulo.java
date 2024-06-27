@@ -18,8 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 public class Articulo extends Base {
 
-    private float costoPedido;
-
     private int tpoEntreControlesStock;
 
     private String nombre;
@@ -31,6 +29,10 @@ public class Articulo extends Base {
     private Integer CGI;
 
     private float precioVenta;
+
+    private Integer demanda;
+
+    private Float costoAlmacenamiento;
 
 
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)

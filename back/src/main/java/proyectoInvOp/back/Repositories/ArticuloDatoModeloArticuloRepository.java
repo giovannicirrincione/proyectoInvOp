@@ -16,4 +16,10 @@ public interface ArticuloDatoModeloArticuloRepository extends BaseRepository<Art
             nativeQuery = true
     )
     List<ArticuloDatoModeloArticulo> findArticulosDatoModeloArticulo(@Param("idDato")Long idDato);
+
+    @Query(
+            value = "SELECT * FROM articulo_dato_modelo_articulo WHERE articulo_dato_modelo_articulo.articulo_id = :idDato",
+            nativeQuery = true
+    )
+    List<ArticuloDatoModeloArticulo> findArticulosDatoModeloArticuloPorArticulo(@Param("idDato")Long idDato);
 }
