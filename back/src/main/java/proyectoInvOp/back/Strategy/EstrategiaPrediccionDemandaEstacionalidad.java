@@ -47,7 +47,11 @@ public class EstrategiaPrediccionDemandaEstacionalidad implements EstrategiaPred
 
             indiceMensual[i] = (ventaMensual[i]/3)/ promGeneral;
 
+
+
         }
+
+
 
 
         List<DetallePrediccion> detallePrediccionList = new ArrayList<>();
