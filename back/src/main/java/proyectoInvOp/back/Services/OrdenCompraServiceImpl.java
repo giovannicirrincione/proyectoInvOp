@@ -75,7 +75,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
 
                 ordenCompra.setMontoTotal(ordenCompra.getCantidad()*precioArt);
 
-                EstadoOrdenCompra estadoOrdenCompra = estadoOrdenCompraRepository.findByNombre("Pendiente");
+                EstadoOrdenCompra estadoOrdenCompra = estadoOrdenCompraRepository.findByNombre("En curso");
 
                 ordenCompra.setEstadoOrdenCompra(estadoOrdenCompra);
 
