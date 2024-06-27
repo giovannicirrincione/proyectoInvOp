@@ -1,11 +1,14 @@
 package proyectoInvOp.back.Services;
 
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 import proyectoInvOp.back.DTOS.DTOArticulo;
 import proyectoInvOp.back.Entity.*;
 import proyectoInvOp.back.Repositories.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +23,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
     OrdenCompraRepository ordenCompraRepository;
     @Autowired
     private DatoModeloArticuloRepository datoModeloArticuloRepository;
+    @Autowired
+    private ArticuloDatoModeloArticuloRepository articuloDatoModeloArticuloRepository;
 
     public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository) {
         super(baseRepository);
@@ -106,11 +111,46 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
     public List<DTOArticulo> listarArticuloReponer() throws Exception {
         try {
 
-            String nombreDato = "Lote Optimo";
-            datoModeloArticuloRepository.findDatoConNombre(String nombreDato =)
+            List<DTOArticulo> articulosAPedir = new ArrayList<DTOArticulo>();
+
+            String nombreDato = "Punto Pedido";
+
+            DatoModeloArticulo puntoPedido = datoModeloArticuloRepository.findDatoModeloArticuloConNombre(nombreDato);
+
+            Long idDato = puntoPedido.getId();
+
+            List<ArticuloDatoModeloArticulo> articulosDatoModeloArticulo = articuloDatoModeloArticuloRepository.findArticulosDatoModeloArticulo(idDato);
+
+            for(ArticuloDatoModeloArticulo articuloDatoModeloArticulo : articulosDatoModeloArticulo){
+
+                Articulo articulo = articuloDatoModeloArticulo.getArticulo();
+
+                List<OrdenCompra> ordenesCompras = ordenCompraRepository.findAllByArticuloId(articulo.getId());
+
+                Boolean sinOrdenes = false;
+
+                for (OrdenCompra ordenCompra : ordenesCompras) {
+                    EstadoOrdenCompra estadoOrdenCompra = ordenCompra.getEstadoOrdenCompra();
+                    if(estadoOrdenCompra.getNombre().equals("Pendiente")){
+                        sinOrdenes = true;
+                    }
+
+                }
 
 
-            return articuloRepository.findArticuloConValoresById(id);
+                if(articulo.getStockActual() <= articuloDatoModeloArticulo.getValorDato() && sinOrdenes){
+
+                    DTOArticulo articuloAPedir = new DTOArticulo();
+
+                    articuloAPedir.setId(articulo.getId());
+                    articuloAPedir.setNombre(articulo.getNombre());
+                    articuloAPedir.setStockActual(articulo.getStockActual());
+                    articuloAPedir.setValorPuntoPedido(articuloDatoModeloArticulo.getValorDato());
+                    articulosAPedir.add(articuloAPedir);
+
+                }
+            }
+            return articulosAPedir;
         }
         catch (Exception e){
             throw new Exception(e.getMessage());
