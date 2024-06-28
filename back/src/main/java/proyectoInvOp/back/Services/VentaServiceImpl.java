@@ -171,12 +171,15 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
 
                 Proveedor proveedor = articuloBD.getProveedorPredeterminado();
 
+
                 List<DemoraProveedorArticulo> demoraProveedorArticulos = proveedor.getDemoraProveedorArticulos();
 
                 float precioArt = 0;
 
                 for (DemoraProveedorArticulo demoras : demoraProveedorArticulos) {
-                    if (demoras.getArticulo() == articuloBD) {
+
+
+                    if (demoras.getArticulo().getId() == articuloBD.getId()) {
                         precioArt = demoras.getPrecioArt();
                         break;
                     }
