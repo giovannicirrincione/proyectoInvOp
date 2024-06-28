@@ -203,4 +203,57 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
             throw new Exception(e.getMessage());
         }
     }
+    @Override
+    public float calcularCGI(Long id) throws Exception{
+        try {
+            Optional<Articulo> articulo = articuloRepository.findActiveById(id);
+
+            Articulo articuloEcontrado = articulo.get();
+
+            List<DemoraProveedorArticulo> proveedorArticulos = articuloEcontrado.getProveedorPredeterminado().getDemoraProveedorArticulos();
+
+            float costoPedido = 0;
+
+            float precioArt = 0;
+
+            for (DemoraProveedorArticulo proveedorArticulo : proveedorArticulos) {
+                if (proveedorArticulo.getArticulo().getId().equals(id)){
+                    costoPedido = proveedorArticulo.getCostoPedido();
+                    precioArt = proveedorArticulo.getPrecioArt();
+                }
+            }
+
+            Integer demanda = articuloEcontrado.getDemanda();
+
+            Float costoAlmacenamiento = articuloEcontrado.getCostoAlmacenamiento();
+
+            List<ArticuloDatoModeloArticulo> articulosDatoModeloArticulo = articuloDatoModeloArticuloRepository.findArticulosDatoModeloArticuloPorArticulo(id);
+
+            int loteOptimo = 1;
+            for (ArticuloDatoModeloArticulo articuloDatoModeloArticulo: articulosDatoModeloArticulo){
+                if(articuloDatoModeloArticulo.getDatoModeloArticulo().getNombreDato().equals("Lote optimo")){
+                    loteOptimo = articuloDatoModeloArticulo.getValorDato();
+                }
+            }
+            System.out.println("before");
+            System.out.println(precioArt);
+            System.out.println(demanda);
+            System.out.println(costoAlmacenamiento);
+            System.out.println(loteOptimo);
+            System.out.println(costoPedido);
+            Float cgi = (precioArt) *demanda + costoAlmacenamiento*(loteOptimo/2) + costoPedido*(demanda/loteOptimo);
+
+            articuloEcontrado.setCGI(cgi);
+
+            update(articuloEcontrado.getId(),articuloEcontrado);
+
+            return (cgi);
+
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+
+
 }

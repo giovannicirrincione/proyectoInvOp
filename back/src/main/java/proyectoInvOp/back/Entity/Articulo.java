@@ -28,9 +28,13 @@ public class Articulo extends Base {
 
     private Integer stockActual;
 
-    private Integer CGI;
+    private float CGI;
 
     private float precioVenta;
+
+    private Integer demanda;
+
+    private Float costoAlmacenamiento;
 
 
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
