@@ -23,7 +23,6 @@ public class Venta extends Base{
 
     private float montoTotal;
 
-    @NotNull
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<DetalleVenta> detalleVentas;
 }

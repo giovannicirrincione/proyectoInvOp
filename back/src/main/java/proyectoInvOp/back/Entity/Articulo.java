@@ -44,6 +44,7 @@ public class Articulo extends Base {
     @JoinColumn(name = "familiaArticuloId")
     private FamiliaArticulo familiaArticulo;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "proveedorPredeterminadoId")
     private Proveedor proveedorPredeterminado;

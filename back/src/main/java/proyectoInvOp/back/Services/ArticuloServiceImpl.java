@@ -218,7 +218,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
             List<DemoraProveedorArticulo> proveedorArticulos = articuloEcontrado.getProveedorPredeterminado().getDemoraProveedorArticulos();
 
             for (DemoraProveedorArticulo prov : proveedorArticulos) {
-                System.out.println();
+                System.out.println(prov.getPrecioArt());
             }
 
 
@@ -227,7 +227,9 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
             float precioArt = 0;
 
             for (DemoraProveedorArticulo proveedorArticulo : proveedorArticulos) {
+                System.out.println(proveedorArticulo.getArticulo().getNombre());
                 if (proveedorArticulo.getArticulo().getId().equals(id)){
+                    System.out.println(proveedorArticulo.getArticulo().getId());
                     costoPedido = proveedorArticulo.getCostoPedido();
                     precioArt = proveedorArticulo.getPrecioArt();
                 }
