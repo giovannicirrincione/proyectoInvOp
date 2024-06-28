@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @Service
 public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implements ArticuloService {
+
     @Autowired
     ArticuloRepository articuloRepository;
     @Autowired
@@ -207,15 +208,18 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
 
 
     @Override
-    public float calcularCGI(Long id) throws Exception{
+    public Float calcularCGI(Long id) throws Exception{
 
         try {
             Optional<Articulo> articulo = articuloRepository.findActiveById(id);
 
-            Articulo articuloEcontrado = articulo.get();
 
+            Articulo articuloEcontrado = articulo.get();
             List<DemoraProveedorArticulo> proveedorArticulos = articuloEcontrado.getProveedorPredeterminado().getDemoraProveedorArticulos();
 
+            for (DemoraProveedorArticulo prov : proveedorArticulos) {
+                System.out.println();
+            }
 
 
             float costoPedido = 0;
@@ -247,13 +251,18 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
             System.out.println(costoAlmacenamiento);
             System.out.println(loteOptimo);
             System.out.println(costoPedido);
+
+            if (demanda == null || costoAlmacenamiento == null){
+                demanda=0;
+                costoAlmacenamiento= 0.0F;
+            }
             Float cgi = (precioArt) *demanda + costoAlmacenamiento*(loteOptimo/2) + costoPedido*(demanda/loteOptimo);
 
             articuloEcontrado.setCGI(cgi);
 
             update(articuloEcontrado.getId(),articuloEcontrado);
 
-            return (cgi);
+            return cgi;
 
 
         } catch (Exception e) {

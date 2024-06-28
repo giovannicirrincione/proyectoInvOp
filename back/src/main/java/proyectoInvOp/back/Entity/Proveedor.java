@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.antlr.v4.runtime.misc.NotNull;
+
 import java.util.List;
 
 @Entity
@@ -25,7 +27,8 @@ public class Proveedor extends Base{
     private String email;
 
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @NotNull
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<DemoraProveedorArticulo> demoraProveedorArticulos;
 
 
