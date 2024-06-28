@@ -26,7 +26,7 @@ public class Articulo extends Base {
 
     private Integer stockActual;
 
-    private Integer CGI;
+    private float CGI;
 
     private float precioVenta;
 

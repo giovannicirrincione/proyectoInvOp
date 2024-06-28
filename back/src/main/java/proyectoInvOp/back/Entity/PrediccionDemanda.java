@@ -27,8 +27,7 @@ public class PrediccionDemanda extends  Base{
     private float valorPredecido;
 
     private List<Double> predicciones;
-    //lO PUSE PQ SINO ME TRAE TODA LA BD
-    @JsonIgnore
+
 
     @NotNull
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)

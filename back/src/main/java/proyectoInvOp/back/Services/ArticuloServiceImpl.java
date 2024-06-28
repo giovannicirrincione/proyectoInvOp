@@ -13,7 +13,6 @@ import java.util.Optional;
 
 @Service
 public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implements ArticuloService {
-
     @Autowired
     ArticuloRepository articuloRepository;
     @Autowired
@@ -206,8 +205,10 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
         }
     }
 
+
     @Override
-    public float calcularCGI(long id) throws Exception{
+    public float calcularCGI(Long id) throws Exception{
+
         try {
             Optional<Articulo> articulo = articuloRepository.findActiveById(id);
 
@@ -215,31 +216,45 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
 
             List<DemoraProveedorArticulo> proveedorArticulos = articuloEcontrado.getProveedorPredeterminado().getDemoraProveedorArticulos();
 
-            float cp = 0;
 
-            float p = 0;
+
+            float costoPedido = 0;
+
+            float precioArt = 0;
 
             for (DemoraProveedorArticulo proveedorArticulo : proveedorArticulos) {
                 if (proveedorArticulo.getArticulo().getId().equals(id)){
-                    cp = proveedorArticulo.getCostoPedido();
-                    p = proveedorArticulo.getPrecioArt();
+                    costoPedido = proveedorArticulo.getCostoPedido();
+                    precioArt = proveedorArticulo.getPrecioArt();
                 }
             }
 
-            int d = articuloEcontrado.getDemanda();
+            Integer demanda = articuloEcontrado.getDemanda();
 
-            float ca = articuloEcontrado.getCostoAlmacenamiento();
+            Float costoAlmacenamiento = articuloEcontrado.getCostoAlmacenamiento();
 
             List<ArticuloDatoModeloArticulo> articulosDatoModeloArticulo = articuloDatoModeloArticuloRepository.findArticulosDatoModeloArticuloPorArticulo(id);
 
-            int q = 0;
+            int loteOptimo = 1;
             for (ArticuloDatoModeloArticulo articuloDatoModeloArticulo: articulosDatoModeloArticulo){
-                if(articuloDatoModeloArticulo.getDatoModeloArticulo().getNombreDato().equals("Lote Optimo")){
-                    q = articuloDatoModeloArticulo.getValorDato();
+                if(articuloDatoModeloArticulo.getDatoModeloArticulo().getNombreDato().equals("Lote optimo")){
+                    loteOptimo = articuloDatoModeloArticulo.getValorDato();
                 }
             }
+            System.out.println("before");
+            System.out.println(precioArt);
+            System.out.println(demanda);
+            System.out.println(costoAlmacenamiento);
+            System.out.println(loteOptimo);
+            System.out.println(costoPedido);
+            Float cgi = (precioArt) *demanda + costoAlmacenamiento*(loteOptimo/2) + costoPedido*(demanda/loteOptimo);
 
-            return (p*d + ca*q/2 + cp*d/q);
+            articuloEcontrado.setCGI(cgi);
+
+            update(articuloEcontrado.getId(),articuloEcontrado);
+
+            return (cgi);
+
 
         } catch (Exception e) {
             throw new Exception(e.getMessage());

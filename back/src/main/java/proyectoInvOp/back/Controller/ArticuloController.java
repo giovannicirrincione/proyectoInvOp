@@ -83,7 +83,8 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
     }
 
     @PutMapping("/cgi/{id}")
-    public ResponseEntity<?> calcularCGI(@PathVariable long id){
+    public ResponseEntity<?> calcularCGI(@PathVariable Long id){
+
         try {
             return ResponseEntity.status(HttpStatus.OK).body(servicio.calcularCGI(id));
         } catch (Exception e) {
@@ -92,5 +93,6 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
             );
         }
     }
+
 
 }
