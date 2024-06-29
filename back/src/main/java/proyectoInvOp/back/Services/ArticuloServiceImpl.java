@@ -180,7 +180,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
 
                 for (OrdenCompra ordenCompra : ordenesCompras) {
                     EstadoOrdenCompra estadoOrdenCompra = ordenCompra.getEstadoOrdenCompra();
-                    if(estadoOrdenCompra.getNombre().equals("Pendiente")){
+                    if(estadoOrdenCompra.getNombre().equals("En curso")){
                         sinOrdenes = false;
                     }
 

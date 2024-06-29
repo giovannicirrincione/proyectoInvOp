@@ -161,6 +161,10 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
                     }
                 }
             }
+            if ("Modelo intervalo fijo".equals(articulo.getModeloInventario().getNombre())){
+                bandera = false;
+            }
+
              //GENERAMOS LA ORDEN COMPRA
             if (bandera) {
 
@@ -189,7 +193,7 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
 
                 ordenCompra.setMontoTotal(montoTotal);
 
-                EstadoOrdenCompra estadoOrdenCompra = estadoOrdenCompraRepository.findByNombre("Pendiente");
+                EstadoOrdenCompra estadoOrdenCompra = estadoOrdenCompraRepository.findByNombre("En curso");
 
                 ordenCompra.setEstadoOrdenCompra(estadoOrdenCompra);
 
