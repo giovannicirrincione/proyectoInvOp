@@ -1,5 +1,6 @@
 package proyectoInvOp.back.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +26,8 @@ public class Proveedor extends Base{
     private String telefono;
 
     private String email;
+
+
 
 
     @NotNull

@@ -3,6 +3,7 @@ package proyectoInvOp.back.Controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import proyectoInvOp.back.DTOS.DTOArticuloMain;
 import proyectoInvOp.back.Entity.Articulo;
 import proyectoInvOp.back.Services.ArticuloServiceImpl;
 
@@ -10,11 +11,21 @@ import proyectoInvOp.back.Services.ArticuloServiceImpl;
 @CrossOrigin(origins = "*")
 @RequestMapping(path = "articulo")
 public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloServiceImpl> {
-    @Override
-    @PostMapping("")
-    public ResponseEntity<?> save(@RequestBody Articulo articulo) {
+
+    @PostMapping("createArticulo")
+    public ResponseEntity<?> createArticulo(@RequestBody DTOArticuloMain articuloRequestDTO) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(servicio.save(articulo));
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.createArticulo(articuloRequestDTO));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    "{\"error\":\"Error porfavor intente mas tarde. \"}"
+            );
+        }
+    }
+    @PutMapping("updateArticulo/{id}")
+    public ResponseEntity<?> updateArticulo(@RequestBody DTOArticuloMain articuloRequestDTO, @PathVariable Long id) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.updateArticulo(id,articuloRequestDTO));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     "{\"error\":\"Error porfavor intente mas tarde. \"}"
@@ -87,6 +98,17 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
 
         try {
             return ResponseEntity.status(HttpStatus.OK).body(servicio.calcularCGI(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    "{\"error\":\"Error porfavor intente mas tarde. \"}"
+            );
+        }
+    }
+
+    @GetMapping("getAllDTO")
+    public ResponseEntity<?> listarArticulosDTO() {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.findAllByDTO());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     "{\"error\":\"Error porfavor intente mas tarde. \"}"

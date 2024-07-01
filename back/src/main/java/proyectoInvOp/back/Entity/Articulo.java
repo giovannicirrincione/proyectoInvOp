@@ -1,6 +1,7 @@
 package proyectoInvOp.back.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -45,7 +46,7 @@ public class Articulo extends Base {
     private FamiliaArticulo familiaArticulo;
 
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name = "proveedorPredeterminadoId")
     private Proveedor proveedorPredeterminado;
 
