@@ -7,11 +7,13 @@ import org.springframework.stereotype.Service;
 import proyectoInvOp.back.Entity.*;
 import proyectoInvOp.back.PatronObservador.ArticuloObserver;
 import proyectoInvOp.back.PatronObservador.OrdenCompraObservable;
+import proyectoInvOp.back.Repositories.ArticuloRepository;
 import proyectoInvOp.back.Repositories.BaseRepository;
 import proyectoInvOp.back.Repositories.EstadoOrdenCompraRepository;
 import proyectoInvOp.back.Repositories.OrdenCompraRepository;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +26,8 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
     @Autowired
     EstadoOrdenCompraRepository estadoOrdenCompraRepository;
     @Autowired
+    ArticuloRepository articuloRepository;
+    @Autowired
     public OrdenCompraServiceImpl(BaseRepository<OrdenCompra, Long> baseRepository, ArticuloObserver articuloObserver) {
         super(baseRepository);
         this.articuloObserver = articuloObserver;
@@ -35,10 +39,14 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
             System.out.println("entre al save");
             boolean bandera = true;
 
-            List<OrdenCompra> ordenCompraList = ordenCompraRepository.findAllByArticuloId(ordenCompra.getArticulo().getId());
+            List<OrdenCompra> ordenCompraList = new ArrayList<>();
+
+            ordenCompraList = ordenCompraRepository.findAllByArticuloId(ordenCompra.getArticulo().getId());
+
             //check de otra orden de compra activa para el articulo
             for (OrdenCompra ordenCompra1 : ordenCompraList){
-                EstadoOrdenCompra estadoOrdenCompra = ordenCompra.getEstadoOrdenCompra();
+
+                EstadoOrdenCompra estadoOrdenCompra = ordenCompra1.getEstadoOrdenCompra();
                 String estadoActual = estadoOrdenCompra.getNombre();
                 if ("Pendiente".equals(estadoActual) || "En curso".equals(estadoActual)) {
                     bandera = false;
@@ -48,9 +56,15 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
             }
 
             if (bandera){
-                Articulo articulo = ordenCompra.getArticulo();
+
+                Long idArt = ordenCompra.getArticulo().getId();
+
+                Optional<Articulo> articuloBD = articuloRepository.findActiveById(idArt);
+
+                Articulo articulo = articuloBD.get();
 
                 Proveedor proveedorPredeterminado = articulo.getProveedorPredeterminado();
+                System.out.println(proveedorPredeterminado.getNombre());
 
                 //Busco el precio del articulo con ese proveedor
 
@@ -75,7 +89,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
 
                 ordenCompra.setMontoTotal(ordenCompra.getCantidad()*precioArt);
 
-                EstadoOrdenCompra estadoOrdenCompra = estadoOrdenCompraRepository.findByNombre("Pendiente");
+                EstadoOrdenCompra estadoOrdenCompra = estadoOrdenCompraRepository.findByNombre("En curso");
 
 
                 ordenCompra.setEstadoOrdenCompra(estadoOrdenCompra);

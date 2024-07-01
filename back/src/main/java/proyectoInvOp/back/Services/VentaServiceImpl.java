@@ -163,6 +163,10 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
                     }
                 }
             }
+            if ("Modelo intervalo fijo".equals(articulo.getModeloInventario().getNombre())){
+                bandera = false;
+            }
+
              //GENERAMOS LA ORDEN COMPRA
             if (bandera) {
 
@@ -173,12 +177,15 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
 
                 Proveedor proveedor = articuloBD.getProveedorPredeterminado();
 
+
                 List<DemoraProveedorArticulo> demoraProveedorArticulos = proveedor.getDemoraProveedorArticulos();
 
                 float precioArt = 0;
 
                 for (DemoraProveedorArticulo demoras : demoraProveedorArticulos) {
-                    if (demoras.getArticulo() == articuloBD) {
+
+
+                    if (demoras.getArticulo().getId() == articuloBD.getId()) {
                         precioArt = demoras.getPrecioArt();
                         break;
                     }
@@ -188,7 +195,7 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
 
                 ordenCompra.setMontoTotal(montoTotal);
 
-                EstadoOrdenCompra estadoOrdenCompra = estadoOrdenCompraRepository.findByNombre("Pendiente");
+                EstadoOrdenCompra estadoOrdenCompra = estadoOrdenCompraRepository.findByNombre("En curso");
 
                 ordenCompra.setEstadoOrdenCompra(estadoOrdenCompra);
 
