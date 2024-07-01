@@ -122,6 +122,7 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
             if (articulo2 == articuloBD){
                 DatoModeloArticulo  articuloDatoModeloArticulo = articulosDatoBD.getDatoModeloArticulo();
                 if("Punto pedido".equals(articuloDatoModeloArticulo.getNombreDato())){
+                    System.out.println(articulosDatoBD.getValorDato());
                     puntoPedido = articulosDatoBD.getValorDato();
                     break;
                 }
@@ -145,8 +146,9 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
 
         //Si el PP es menor al stock Actual se genera la orden de compra (si esq ya no hay una pendiente)
         if(puntoPedido>=stockActual) {
-
+            System.out.println("hola entre");
             boolean bandera = true;
+
 
             //CHEQUEAMOS QUE NO HAYA UNA ORDEN DE COMPRA PENDIENTE PARA ESE ARTICULO
             List<OrdenCompra> ordenCompras = ordenCompraRepository.findAllActive();
