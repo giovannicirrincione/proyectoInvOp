@@ -1,10 +1,8 @@
 package proyectoInvOp.back.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.antlr.v4.runtime.misc.NotNull;
 
 @Entity
 @Table(name = "demoraProveedorArticulo")
@@ -14,9 +12,13 @@ import lombok.Setter;
 @AllArgsConstructor
 public class DemoraProveedorArticulo extends Base{
 
+    private float costoPedido;
 
     private float tiempoDemora;
 
+    private float precioArt;
+
+    @NotNull
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn (name = "articuloId")
     private Articulo articulo;

@@ -1,5 +1,6 @@
 package proyectoInvOp.back.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class PrediccionDemanda extends  Base{
 
     private List<Double> predicciones;
 
+
     @NotNull
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name = "articuloId")
@@ -37,12 +39,8 @@ public class PrediccionDemanda extends  Base{
     @JoinColumn(name = "metodoPrediccionId")
     private MetodoPrediccion metodoPrediccion;
 
-    public PrediccionDemanda(List<Double> predicciones) {
-        this.predicciones = predicciones;
-    }
-
-    public List<Double> getPredicciones() {
-        return predicciones;
-    }
+    @NotNull
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<DetallePrediccion> detallePrediccions;
 
 }

@@ -25,10 +25,10 @@ public class ModeloInventario extends Base{
     @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private List<FamiliaArticulo> familiaArticulos;
 
-    @JsonIgnore//Cambiar mas adelante
-    @ManyToMany(cascade = CascadeType.REFRESH)
+
+    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinTable(
-            name = "ModeloInventarioDatosModeloInventario",
+            name = "ModeloInventarioDatosModeloArticulo",
             joinColumns = @JoinColumn(name = "modeloInventarioId"),
             inverseJoinColumns = @JoinColumn(name = "datoModeloId")
     )

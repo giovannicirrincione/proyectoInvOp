@@ -2,39 +2,86 @@ package proyectoInvOp.back.Strategy;
 
 import proyectoInvOp.back.DTOS.DTOResultadoSimu;
 import proyectoInvOp.back.DTOS.DTOVentas;
+import proyectoInvOp.back.Entity.DetallePrediccion;
 import proyectoInvOp.back.Entity.PrediccionDemanda;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class EstrategiaPrediccionDemandaEstacionalidad implements EstrategiaPrediccionDemanda{
     @Override
     public PrediccionDemanda predecirDemanda(List<DTOVentas> ventas, int cantPeriodos, DTOResultadoSimu resultadoSimu) {
+
         List<Double> predicciones = new ArrayList<>();
-        int estacionalidad = 12; // Por ejemplo, estacionalidad anual (12 meses)
 
-        // Calcular promedios estacionales
-        double[] promediosEstacionales = new double[estacionalidad];
-        int[] conteosEstacionales = new int[estacionalidad];
+        double promGeneral = 0;
 
-        for (int i = 0; i < ventas.size(); i++) {
-            int indiceEstacional = i % estacionalidad;
-            promediosEstacionales[indiceEstacional] += ventas.get(i).getCantidadVentas();
-            conteosEstacionales[indiceEstacional]++;
+        double totalVentas = 0;
+
+        for (DTOVentas venta : ventas){
+
+            totalVentas = totalVentas + venta.getCantidadVentas();
+
         }
 
-        for (int i = 0; i < estacionalidad; i++) {
-            if (conteosEstacionales[i] > 0) {
-                promediosEstacionales[i] /= conteosEstacionales[i];
-            }
+
+        promGeneral = totalVentas/ventas.size();
+
+
+        int[] ventaMensual = new int[12];
+
+        for (DTOVentas ventas1 : ventas){
+
+            int mesVenta = ventas1.getFecha().getMonthValue()-1;
+
+            int cantVendida = ventas1.getCantidadVentas();
+
+            //agregamos en el indice del mes la cantidad vendida
+            ventaMensual[mesVenta] = ventaMensual[mesVenta] + cantVendida;
         }
 
-        // Generar predicciones
+        double[] indiceMensual = new double[12];
+
+        for (int i = 0; i < indiceMensual.length; i++){
+
+            indiceMensual[i] = (ventaMensual[i]/3.0)/ promGeneral;
+
+
+
+        }
+
+
+        List<DetallePrediccion> detallePrediccionList = new ArrayList<>();
+
+        PrediccionDemanda prediccionDemanda = new PrediccionDemanda();
+        //Mes actual acomodado a la lista
+        int mes = LocalDate.now().getMonthValue() - 1;
+
+        double demanda = 0;
+        int mesFuturo = 0;
+
+
         for (int i = 0; i < cantPeriodos; i++) {
-            int indiceEstacional = (ventas.size() + i) % estacionalidad;
-            predicciones.add(promediosEstacionales[indiceEstacional]);
+            DetallePrediccion detallePrediccion = new DetallePrediccion();
+
+            // Calcula el mes futuro con manejo de desbordamiento usando el operador módulo
+            mesFuturo = (mes + i) % 12;
+
+            // Calcula la demanda para el mes futuro
+            demanda = indiceMensual[mesFuturo] * promGeneral;
+
+            // Aquí puedes agregar la lógica para usar 'detallePrediccion'
+            detallePrediccion.setValorPredecido(demanda);
+            detallePrediccion.setMes(mesFuturo + 1);
+            detallePrediccionList.add(detallePrediccion);
         }
 
-        return new PrediccionDemanda(predicciones);
+
+        prediccionDemanda.setDetallePrediccions(detallePrediccionList);
+
+        return prediccionDemanda;
+
     }
 }

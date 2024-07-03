@@ -14,5 +14,5 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DatoModeloArticulo extends Base{
-    private String nombreDato;
+    private String nombre;
 }

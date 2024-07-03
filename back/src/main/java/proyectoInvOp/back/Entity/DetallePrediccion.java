@@ -6,17 +6,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 @Entity
-@Table(name = "parametroEspecifico")
+@Table(name = "detalle prediccion")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+public class DetallePrediccion extends Base{
 
-
-public class ParametroEspecifico extends Base{
-
-    private String nombreParametro;
-
-    private float valorParametro;
+    public int mes;
+    public int año;
+    public Double valorPredecido;
 }

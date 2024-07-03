@@ -1,6 +1,8 @@
 package proyectoInvOp.back.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,13 +20,21 @@ import java.util.List;
 @AllArgsConstructor
 public class Articulo extends Base {
 
+    private int tpoEntreControlesStock;
+
     private String nombre;
 
     private String descripcion;
 
     private Integer stockActual;
 
-    private Integer CGI;
+    private float CGI;
+
+    private float precioVenta;
+
+    private Integer demanda;
+
+    private Float costoAlmacenamiento;
 
 
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
@@ -36,6 +46,7 @@ public class Articulo extends Base {
     @JoinColumn(name = "familiaArticuloId")
     private FamiliaArticulo familiaArticulo;
 
+    @JsonIgnoreProperties({"demoraProveedorArticulos"})
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name = "proveedorPredeterminadoId")
     private Proveedor proveedorPredeterminado;
