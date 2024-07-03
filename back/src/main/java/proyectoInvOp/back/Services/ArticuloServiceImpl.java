@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 import proyectoInvOp.back.DTOS.DTOArticulo;
-import proyectoInvOp.back.DTOS.DTOArticuloMain;
 import proyectoInvOp.back.Entity.*;
 import proyectoInvOp.back.Repositories.*;
 
@@ -36,91 +35,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
         super(baseRepository);
     }
 
-    //PARA EVITAR EL STACK OVERFLOW Q GENERA EL PROVEEDOR PRED
-    @Transactional
-    public List<DTOArticuloMain> findAllByDTO() throws Exception{
-        try {
-            List<Articulo> articulos = articuloRepository.findAll();
-            return articulos.stream()
-                    .map(DTOArticuloMain::new)
-                    .collect(Collectors.toList());
-        }
-        catch (Exception e){
-            throw new Exception(e.getMessage());
-        }
-    }
-    @Transactional
-    public DTOArticuloMain createArticulo(DTOArticuloMain articuloRequestDTO) {
-        Articulo articulo = new Articulo();
-
-        // Establece los campos desde el DTO
-        articulo.setNombre(articuloRequestDTO.getNombre());
-        articulo.setDescripcion(articuloRequestDTO.getDescripcion());
-        articulo.setStockActual(articuloRequestDTO.getStockActual());
-        articulo.setCGI(articuloRequestDTO.getCGI());
-        articulo.setPrecioVenta(articuloRequestDTO.getPrecioVenta());
-
-        // Busca y establece relaciones
-        Optional<FamiliaArticulo> familiaArticuloBD = familiaArticuloRepository.findById(articuloRequestDTO.getFamiliaArticuloId());
-        FamiliaArticulo familiaArticulo = familiaArticuloBD.get();
-        articulo.setFamiliaArticulo(familiaArticulo);
-
-
-            Optional<Proveedor> proveedorPredeterminadoBD = proveedorRepository.findById(articuloRequestDTO.getProveedorPredeterminadoId());
-            Proveedor proveedorPredeterminado = proveedorPredeterminadoBD.get();
-            articulo.setProveedorPredeterminado(proveedorPredeterminado);
-
-
-
-
-        List<ModeloInventario> modeloInventarioList = modeloInventarioRepository.findAllActive();
-        for (ModeloInventario modeloInventario : modeloInventarioList) {
-            if (modeloInventario.getFamiliaArticulos().contains(familiaArticulo)) {
-                articulo.setModeloInventario(modeloInventario);
-                break; // Sale del bucle una vez que se encuentra y se asigna un modelo inventario
-            }
-        }
-
-        // Guarda el artículo
-        articulo = articuloRepository.save(articulo);
-
-        return new DTOArticuloMain(articulo);
-    }
-
-    @Transactional
-    public DTOArticuloMain updateArticulo(Long id, DTOArticuloMain articuloRequestDTO) {
-        Optional<Articulo> articuloBD = articuloRepository.findById(id);
-
-        Articulo articulo = articuloBD.get();
-
-
-        // Actualiza los campos desde el DTO
-        articulo.setNombre(articuloRequestDTO.getNombre());
-        articulo.setDescripcion(articuloRequestDTO.getDescripcion());
-        articulo.setStockActual(articuloRequestDTO.getStockActual());
-        articulo.setCGI(articuloRequestDTO.getCGI());
-        articulo.setPrecioVenta(articuloRequestDTO.getPrecioVenta());
-
-        // Actualiza relaciones
-        Optional<FamiliaArticulo> familiaArticuloBD = familiaArticuloRepository.findById(articuloRequestDTO.getFamiliaArticuloId());
-        FamiliaArticulo familiaArticulo = familiaArticuloBD.get();
-        articulo.setFamiliaArticulo(familiaArticulo);
-
-
-            Optional<Proveedor> proveedorPredeterminadoBD = proveedorRepository.findById(articuloRequestDTO.getProveedorPredeterminadoId());
-
-            Proveedor proveedorPredeterminado = proveedorPredeterminadoBD.get();
-            System.out.println(proveedorPredeterminado.getNombre());
-
-            articulo.setProveedorPredeterminado(proveedorPredeterminado);
-
-
-
-        // Guarda los cambios
-        articulo = articuloRepository.save(articulo);
-
-        return new DTOArticuloMain(articulo);
-    }
     @Override
     public Articulo save(Articulo articulo) throws Exception {
         try {

@@ -3,7 +3,6 @@ package proyectoInvOp.back.Controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import proyectoInvOp.back.DTOS.DTOArticuloMain;
 import proyectoInvOp.back.Entity.Articulo;
 import proyectoInvOp.back.Services.ArticuloServiceImpl;
 
@@ -12,26 +11,6 @@ import proyectoInvOp.back.Services.ArticuloServiceImpl;
 @RequestMapping(path = "articulo")
 public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloServiceImpl> {
 
-    @PostMapping("createArticulo")
-    public ResponseEntity<?> createArticulo(@RequestBody DTOArticuloMain articuloRequestDTO) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(servicio.createArticulo(articuloRequestDTO));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    "{\"error\":\"Error porfavor intente mas tarde. \"}"
-            );
-        }
-    }
-    @PutMapping("updateArticulo/{id}")
-    public ResponseEntity<?> updateArticulo(@RequestBody DTOArticuloMain articuloRequestDTO, @PathVariable Long id) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(servicio.updateArticulo(id,articuloRequestDTO));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    "{\"error\":\"Error porfavor intente mas tarde. \"}"
-            );
-        }
-    }
     @Override
     @PutMapping("delete/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
@@ -105,16 +84,6 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
         }
     }
 
-    @GetMapping("getAllDTO")
-    public ResponseEntity<?> listarArticulosDTO() {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(servicio.findAllByDTO());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    "{\"error\":\"Error porfavor intente mas tarde. \"}"
-            );
-        }
-    }
 
 
 }
