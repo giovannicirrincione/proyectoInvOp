@@ -121,7 +121,7 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
             Articulo articulo2 = articulosDatoBD.getArticulo();
             if (articulo2 == articuloBD){
                 DatoModeloArticulo  articuloDatoModeloArticulo = articulosDatoBD.getDatoModeloArticulo();
-                if("Punto pedido".equals(articuloDatoModeloArticulo.getNombreDato())){
+                if("Punto pedido".equals(articuloDatoModeloArticulo.getNombre())){
                     System.out.println(articulosDatoBD.getValorDato());
                     puntoPedido = articulosDatoBD.getValorDato();
                     break;
@@ -136,7 +136,7 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
             Articulo articulo2 = articulosDatoBD.getArticulo();
             if (articulo2 == articuloBD){
                 DatoModeloArticulo  articuloDatoModeloArticulo = articulosDatoBD.getDatoModeloArticulo();
-                if("Lote optimo".equals(articuloDatoModeloArticulo.getNombreDato())){
+                if("Lote optimo".equals(articuloDatoModeloArticulo.getNombre())){
                     loteOptimo = articulosDatoBD.getValorDato();
                     break;
                 }

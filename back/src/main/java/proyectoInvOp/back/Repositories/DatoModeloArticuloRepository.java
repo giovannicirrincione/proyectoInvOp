@@ -8,8 +8,8 @@ import proyectoInvOp.back.Entity.DatoModeloArticulo;
 @Repository
 public interface DatoModeloArticuloRepository extends BaseRepository<DatoModeloArticulo,Long>{
     @Query(
-            value = "SELECT * FROM datos_modelo_articulo WHERE datos_modelo_articulo.nombre_dato =:nombreDato",
+            value = "SELECT * FROM datos_modelo_articulo WHERE datos_modelo_articulo.nombre =:nombre",
             nativeQuery = true
     )
-    DatoModeloArticulo findDatoModeloArticuloConNombre(@Param("nombreDato")String nombreDato);
+    DatoModeloArticulo findDatoModeloArticuloConNombre(@Param("nombre")String nombreDato);
 }

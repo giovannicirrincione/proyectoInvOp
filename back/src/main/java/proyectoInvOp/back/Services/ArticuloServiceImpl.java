@@ -127,7 +127,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
 
             DatoModeloArticulo datoModeloArticulo1 = articuloDatoModeloArticulo.getDatoModeloArticulo();
 
-            if ("Stock seguridad".equals(datoModeloArticulo1.getNombreDato())) {
+            if ("Stock seguridad".equals(datoModeloArticulo1.getNombre())) {
                 //Chekeo q el stock de seguridad este por debajo del stockActual
                 if (stockActual <= articuloDatoModeloArticulo.getValorDato()) {
 
@@ -167,9 +167,9 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
 
             List<DTOArticulo> articulosAPedir = new ArrayList<DTOArticulo>();
 
-            String nombreDato = "Punto pedido";
+            String nombre = "Punto pedido";
 
-            DatoModeloArticulo puntoPedido = datoModeloArticuloRepository.findDatoModeloArticuloConNombre(nombreDato);
+            DatoModeloArticulo puntoPedido = datoModeloArticuloRepository.findDatoModeloArticuloConNombre(nombre);
 
             Long idDato = puntoPedido.getId();
 
@@ -249,7 +249,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo,Long> implemen
 
             int loteOptimo = 1;
             for (ArticuloDatoModeloArticulo articuloDatoModeloArticulo: articulosDatoModeloArticulo){
-                if(articuloDatoModeloArticulo.getDatoModeloArticulo().getNombreDato().equals("Lote optimo")){
+                if(articuloDatoModeloArticulo.getDatoModeloArticulo().getNombre().equals("Lote optimo")){
                     loteOptimo = articuloDatoModeloArticulo.getValorDato();
                 }
             }

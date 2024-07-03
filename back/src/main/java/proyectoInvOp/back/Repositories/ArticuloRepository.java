@@ -12,9 +12,9 @@ import java.util.List;
 public interface ArticuloRepository extends BaseRepository<Articulo,Long>{
 
     @Query("SELECT a.id as id, a.nombre as nombre, a.stockActual as stockActual, " +
-            "COALESCE(MAX(CASE WHEN dma.nombreDato = 'Lote pptimo' THEN adma.valorDato ELSE 0 END), 0) as valorLoteOptimo, " +
-            "COALESCE(MAX(CASE WHEN dma.nombreDato = 'Punto pedido' THEN adma.valorDato ELSE 0 END), 0) as valorPuntoPedido, " +
-            "COALESCE(MAX(CASE WHEN dma.nombreDato = 'Stock seguridad' THEN adma.valorDato ELSE 0 END), 0) as stockSeguridad " +
+            "COALESCE(MAX(CASE WHEN dma.nombre = 'Lote optimo' THEN adma.valorDato ELSE 0 END), 0) as valorLoteOptimo, " +
+            "COALESCE(MAX(CASE WHEN dma.nombre = 'Punto pedido' THEN adma.valorDato ELSE 0 END), 0) as valorPuntoPedido, " +
+            "COALESCE(MAX(CASE WHEN dma.nombre = 'Stock seguridad' THEN adma.valorDato ELSE 0 END), 0) as stockSeguridad " +
             "FROM Articulo a " +
             "LEFT JOIN ArticuloDatoModeloArticulo adma ON a.id = adma.articulo.id " +
             "LEFT JOIN DatoModeloArticulo dma ON adma.datoModeloArticulo.id = dma.id " +
@@ -23,9 +23,9 @@ public interface ArticuloRepository extends BaseRepository<Articulo,Long>{
     List<DTOArticulo> findArticulosConValores();
 
     @Query("SELECT new proyectoInvOp.back.DTOS.DTOArticulo(a.id, a.nombre, a.stockActual, " +
-            "COALESCE(MAX(CASE WHEN dma.nombreDato = 'Lote optimo' THEN adma.valorDato ELSE 0 END), 0), " +
-            "COALESCE(MAX(CASE WHEN dma.nombreDato = 'Punto pedido' THEN adma.valorDato ELSE 0 END), 0), " +
-            "COALESCE(MAX(CASE WHEN dma.nombreDato = 'Stock seguridad' THEN adma.valorDato ELSE 0 END), 0)) " +
+            "COALESCE(MAX(CASE WHEN dma.nombre = 'Lote optimo' THEN adma.valorDato ELSE 0 END), 0), " +
+            "COALESCE(MAX(CASE WHEN dma.nombre = 'Punto pedido' THEN adma.valorDato ELSE 0 END), 0), " +
+            "COALESCE(MAX(CASE WHEN dma.nombre = 'Stock seguridad' THEN adma.valorDato ELSE 0 END), 0)) " +
             "FROM Articulo a " +
             "LEFT JOIN ArticuloDatoModeloArticulo adma ON a.id = adma.articulo.id " +
             "LEFT JOIN DatoModeloArticulo dma ON adma.datoModeloArticulo.id = dma.id " +
